@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: DB_HOST
+              value: "{{ .Values.env.DB_HOST }}"
+            - name: DB_PORT
+              value: "{{ .Values.env.DB_PORT }}"
+            - name: DB_USER
+              value: "{{ .Values.env.DB_USER }}"
+            - name: DB_PASSWORD
+              value: "{{ .Values.env.DB_PASSWORD }}"
+            - name: DB_NAME
+              value: "{{ .Values.env.DB_NAME }}"
+            - name: RABBITMQ_HOST
+              value: "{{ .Values.env.RABBITMQ_HOST }}"
+            - name: RABBITMQ_PORT
+              value: "{{ .Values.env.RABBITMQ_PORT }}"
+            - name: RABBITMQ_USER
+              value: "{{ .Values.env.RABBITMQ_USER }}"
+            - name: RABBITMQ_PASSWORD
+              value: "{{ .Values.env.RABBITMQ_PASSWORD }}"
+            - name: CHAT_QUEUE
+              value: "{{ .Values.env.CHAT_QUEUE }}"
+            - name: MEET_QUEUE
+              value: "{{ .Values.env.MEET_QUEUE }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}

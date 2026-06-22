@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tn.esprit.servicemeet.config.MeetEventPublisher;
 import tn.esprit.servicemeet.dto.MeetingRequest;
 import tn.esprit.servicemeet.dto.MeetingResponse;
 import tn.esprit.servicemeet.entity.Meeting;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
+    private final MeetEventPublisher meetEventPublisher;
 
     /**
      * Create a new meeting
@@ -55,9 +57,11 @@ public class MeetingService {
             meeting.setIsActive(true);
 
             Meeting savedMeeting = meetingRepository.save(meeting);
-            log.info("Meeting created successfully with ID: {} and room: {}", 
+            log.info("Meeting created successfully with ID: {} and room: {}",
                     savedMeeting.getId(), savedMeeting.getRoomName());
-            
+
+            meetEventPublisher.publishMeetingCreated(savedMeeting);
+
             return convertToResponse(savedMeeting);
             
         } catch (Exception e) {

@@ -3,7 +3,7 @@ import { WebSocketService } from '../web-socket-service.service';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user.service';
-import { NotificationserviceService, MeetingNotificationRequest } from '../notificationservice.service';
+import { NotificationserviceService } from '../notificationservice.service';
 import {FormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 
@@ -84,32 +84,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
         const senderEmail = sessionStorage.getItem('email') || 'unknown@stb.com.tn';
         const senderName = sessionStorage.getItem('firstName') + ' ' + sessionStorage.getItem('lastName') || 'Unknown User';
 
-        // Create notification
-        const notification: MeetingNotificationRequest = {
-            userEmail: recipientUser.email,
-            title: `New Message from ${senderName}`,
-            message: this.messageContent.length > 50 
-                ? this.messageContent.substring(0, 50) + '...' 
-                : this.messageContent,
-            senderEmail: senderEmail,
-            senderName: senderName,
-            notificationType: 'info',
-            actionUrl: '/messenger',
-            icon: 'fa-comment',
-            priority: 'normal'
-        };
-
-        console.log('Sending message notification:', notification);
-
-        this.notificationService.sendMeetingNotification(notification).subscribe({
-            next: (response) => {
-                console.log(`Message notification sent to ${recipientUser.email}:`, response);
-            },
-            error: (error) => {
-                console.error(`Failed to send message notification to ${recipientUser.email}:`, error);
-                console.error('Error details:', error.error);
-            }
-        });
+        // Notifications are now sent automatically via RabbitMQ from service-chat
     }
 
     getUsers(): void {

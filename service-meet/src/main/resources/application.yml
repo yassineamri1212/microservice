@@ -7,6 +7,11 @@ spring:
   cloud:
     compatibility-verifier:
       enabled: false  # Avoid Spring Cloud version compatibility issues
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: rabbituser
+    password: rabbitpass
   datasource:
     url: jdbc:postgresql://postgresdb:5432/meetings_db
     username: postgres

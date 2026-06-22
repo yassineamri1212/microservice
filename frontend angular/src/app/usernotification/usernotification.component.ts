@@ -8,7 +8,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NotificationserviceService, NotificationResponse, NotificationType } from '../notificationservice.service';
+import { NotificationserviceService, Notification, NotificationType } from '../notificationservice.service';
+type NotificationResponse = Notification;
 
 @Component({
   selector: 'app-usernotification',
@@ -63,7 +64,7 @@ export class UsernotificationComponent implements OnInit, OnDestroy {
     }
 
     markAsRead(notification: NotificationResponse): void {
-        if (notification.id && !notification.isRead) {
+        if (notification.id && !notification.is_read) {
             this.notificationService.markAsRead(notification.id)
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({

@@ -98,6 +98,7 @@ services:
     depends_on:
       - eureka-server
       - postgresdb
+      - rabbitmq
     ports:
       - "8088:8088"
     environment:
@@ -105,6 +106,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/chat_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: rabbituser
+      SPRING_RABBITMQ_PASSWORD: rabbitpass
 
   service-meet:
     build:
@@ -114,6 +119,7 @@ services:
     depends_on:
       - eureka-server
       - postgresdb
+      - rabbitmq
     ports:
       - "8085:8085"
     environment:
@@ -121,6 +127,44 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/meetings_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: rabbituser
+      SPRING_RABBITMQ_PASSWORD: rabbitpass
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: notification_py_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  python-notification-service:
+    build:
+      context: ./python-notification-service
+      dockerfile: Dockerfile
+    container_name: python-notification-service
+    depends_on:
+      - mysql
+      - rabbitmq
+    ports:
+      - "8090:8090"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      DB_NAME: notification_py_db
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: rabbituser
+      RABBITMQ_PASSWORD: rabbitpass
 
 volumes:
   db:
+  mysql_data:

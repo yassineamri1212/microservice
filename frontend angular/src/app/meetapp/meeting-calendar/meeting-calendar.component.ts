@@ -8,7 +8,7 @@ import { ClasseService } from "../../classe.service";
 import { UserService } from "../../user.service";
 import { Usertype } from "../../Model/usertype";
 import { Role } from "../../Model/role";
-import { NotificationserviceService, NotificationType, MeetingNotificationRequest } from "../../notificationservice.service";
+import { NotificationserviceService } from "../../notificationservice.service";
 
 // Interface for user with role information
 interface UserWithRole {
@@ -261,17 +261,7 @@ export class MeetingCalendarComponent implements AfterViewInit, OnInit {
                 priority: 'normal'
             };
 
-            console.log('Sending notification:', notification);
-
-            this.notificationService.sendMeetingNotification(notification).subscribe({
-                next: (response) => {
-                    console.log(`Meeting ${meetingType} notification sent to ${recipientEmail}:`, response);
-                },
-                error: (error) => {
-                    console.error(`Failed to send meeting ${meetingType} notification to ${recipientEmail}:`, error);
-                    console.error('Error details:', error.error);
-                }
-            });
+            // Notifications are now sent automatically via RabbitMQ from service-meet
         });
 
         console.log(`Meeting ${meetingType} notifications sent to ${notificationRecipients.length} recipients`);

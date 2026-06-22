@@ -28,6 +28,8 @@ jobs:
             context: ./user-service
           - service: frontend
             context: "./frontend angular"
+          - service: python-notification-service
+            context: ./python-notification-service
 
     steps:
       - name: Checkout repository
