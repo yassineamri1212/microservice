@@ -1,0 +1,37 @@
+replicaCount: 1
+
+image:
+  repository: theoldisback/user-service
+  tag: localcluster
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8089
+
+# Optimized resource configuration for minikube
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# JVM optimization for low resource usage
+jvm:
+  heapSize: "256m"
+  options: "-Xms128m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+
+# Auto-restart configuration
+restartPolicy: Always
+
+# Probes for health checking
+
+
+# Environment variables for rebuild optimization
+env:
+  SPRING_PROFILES_ACTIVE: "minikube"
+  SERVER_TOMCAT_MAX_THREADS: "50"
+  SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "5"
+  LOGGING_LEVEL_ROOT: "WARN"

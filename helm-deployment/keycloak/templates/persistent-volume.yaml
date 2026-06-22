@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: keycloak-persistent-pv
+  labels:
+    type: local
+    app: keycloak
+spec:
+  storageClassName: keycloak-persistent
+  capacity:
+    storage: 8Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/keycloak-persistent-data
+    type: DirectoryOrCreate

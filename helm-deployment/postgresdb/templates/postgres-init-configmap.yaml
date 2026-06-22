@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  labels:
+    app: postgresdb
+data:
+  01-create-databases.sql: |
+    -- Create database for bank-accounts-service
+    CREATE DATABASE bank_accounts_db;
+    
+    -- Create user for bank-accounts-service
+    CREATE USER bankuser WITH ENCRYPTED PASSWORD 'bankpassword';
+    
+    -- Grant privileges to bankuser on bank_accounts_db
+    GRANT ALL PRIVILEGES ON DATABASE bank_accounts_db TO bankuser;
+    
+    -- Connect to bank_accounts_db and set up schema
+    \c bank_accounts_db;
+    
+    -- Grant schema privileges
+    GRANT ALL ON SCHEMA public TO bankuser;
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO bankuser;
+    GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO bankuser;
+    
+    -- Set default privileges for future objects
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO bankuser;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO bankuser;
+    
+    -- Create initial CNSS treasury account table (will be managed by JPA, but ensuring it exists)
+    -- The application will handle the actual table creation and data initialization

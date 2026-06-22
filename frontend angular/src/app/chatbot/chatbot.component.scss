@@ -1,0 +1,101 @@
+body {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Set the height of the body to cover the viewport height */
+    overflow: auto; /* Allow scrolling if content exceeds viewport height */
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Chat Header */
+.chat-header {
+    padding: 10px;
+    text-align: center;
+    font-size: 36px;
+}
+
+.chat-header h2 {
+    margin: 0;
+}
+
+/* Chat Messages */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.message-container {
+    display: flex; /* Display messages in a line */
+    margin: 5px 0;
+}
+
+/* Message */
+.message {
+    display: inline-block; /* Ensure message content only takes up necessary space */
+    background-color: #f2f2f2; /* Set background color of message */
+    border-radius: 10px;
+    padding: 10px;
+}
+
+
+/* Chat Input */
+.chat-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+}
+.microphone-container {
+    display: inline-block; /* Ensure container wraps around the image */
+    cursor: pointer; /* Show pointer cursor on hover */
+}
+
+/* Apply hover effect on the image */
+.microphone-container:hover img {
+    filter: brightness(1.5); /* Increase brightness on hover (adjust as needed) */
+}
+
+/* Set the initial size of the image */
+.microphone-container img {
+    height: 45px;
+    width: 45px;
+}
+.chat-input input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+.chat-input button:hover {
+    background-color: #0056b3;
+}
+
+/* Talk Button */
+.talk-button {
+    background-color: #28a745;
+}
+
+.talk-button:hover {
+    background-color: #218838;
+}

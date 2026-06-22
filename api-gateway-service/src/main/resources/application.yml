@@ -1,0 +1,82 @@
+server:
+  port: 8080  # The internal container port; mapped to 8084 in Docker Compose
+
+spring:
+  application:
+    name: api-gateway-service
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true          # Enable service discovery routing via Eureka
+          lower-case-service-id: true
+      routes:
+        - id: payment-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment/**
+        - id: cnss-service
+          uri: lb://CNSS-SERVICE
+          predicates:
+            - Path=/cnss/**
+        - id: bank-accounts-service
+          uri: lb://BANK-ACCOUNTS-SERVICE
+          predicates:
+            - Path=/api/bank-accounts/**
+        - id: meet-service
+          uri: lb://SERVICE-MEET
+          predicates:
+            - Path=/meet/**
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=1
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+        - id: notification-websocket
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notification-service/**
+          filters:
+            - StripPrefix=1
+        - id: chat-service
+          uri: lb://SERVICE-CHAT
+          predicates:
+            - Path=/api/chat/**
+          filters:
+            - RewritePath=/api/chat/(?<segment>.*), /api/$\{segment}
+        - id: chat-websocket
+          uri: lb://SERVICE-CHAT
+          predicates:
+            - Path=/chat/ws
+          filters:
+            - StripPrefix=1
+        - id: signature-service
+          uri: lb://SIGNATURE-SERVICE
+          predicates:
+            - Path=/api/signatures/**
+          filters:
+            - StripPrefix=1
+
+    compatibility-verifier:
+      enabled: false  # Avoid Spring Cloud version compatibility issues
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true   # <--- HERE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

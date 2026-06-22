@@ -1,0 +1,346 @@
+<div class="reservation-details-container">
+    <!-- Enhanced Header Section -->
+    <div class="header-section">
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-navigation">
+                    <button class="back-btn modern-btn" (click)="goBack()">
+                        <i class="icon-back"></i>
+                        Back to Reservations
+                    </button>
+                </div>
+                <h1 class="page-title">
+                    <i class="icon-reservation"></i>
+                    Reservation Details
+                </h1>
+                <p class="page-subtitle">View and manage reservation information</p>
+            </div>
+            <div class="header-actions">
+                <button class="refresh-btn modern-btn" (click)="refreshReservation()" [disabled]="loading">
+                    <i class="icon-refresh" [class.spinning]="loading"></i>
+                    <span *ngIf="!loading">Refresh</span>
+                    <span *ngIf="loading">Loading...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Error Message -->
+    <div *ngIf="error" class="error-message modern-alert">
+        <div class="alert-icon">
+            <i class="icon-error"></i>
+        </div>
+        <div class="alert-content">
+            <h4>Error Loading Reservation</h4>
+            <p>{{ error }}</p>
+            <div class="alert-actions">
+                <button class="retry-btn" (click)="refreshReservation()">
+                    <i class="icon-retry"></i>
+                    Try Again
+                </button>
+                <button class="back-btn-alert" (click)="goBack()">
+                    <i class="icon-back"></i>
+                    Go Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Loading State -->
+    <div *ngIf="loading && !error" class="loading-container">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading reservation details...</p>
+        </div>
+    </div>
+
+    <!-- Enhanced Reservation Details -->
+    <div *ngIf="!loading && !error && reservation" class="reservation-details">
+
+        <!-- Enhanced Status Alert -->
+        <div class="status-alert modern-status" [class]="getStatusClass()">
+            <div class="status-content">
+                <div class="status-icon">
+                    <i class="status-indicator"></i>
+                </div>
+                <div class="status-info">
+                    <h2>{{ getStatusText() }}</h2>
+                    <div *ngIf="isExpiringSoon()" class="expiry-warning">
+                        <i class="icon-warning"></i>
+                        Expires in {{ getDaysUntilExpiry() }} day(s)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Main Details Card -->
+        <div class="details-card modern-card">
+            <div class="card-header">
+                <h3>
+                    <i class="icon-info"></i>
+                    Reservation Information
+                </h3>
+                <div class="card-badge">
+                    <span class="reservation-id">ID: {{ reservation.id }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-icon">
+                            <i class="icon-id"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>CIN</label>
+                            <span class="value cin">{{ reservation.cin }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item" *ngIf="reservation.email">
+                        <div class="detail-icon">
+                            <i class="icon-email"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>Email Address</label>
+                            <span class="value email">{{ getEmailDisplay() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item" *ngIf="reservation.phoneNumber">
+                        <div class="detail-icon">
+                            <i class="icon-phone"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>Phone Number</label>
+                            <span class="value phone">{{ reservation.phoneNumber }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon">
+                            <i class="icon-reference"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>Reference Code</label>
+                            <span class="value reference">{{ reservation.referenceCode }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon">
+                            <i class="icon-amount"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>Amount</label>
+                            <span class="value amount">{{ reservation.amount | currency:'TND':'symbol':'1.2-2' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon">
+                            <i class="icon-status"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>Status</label>
+                            <span class="value status-badge" [class]="getStatusClass()">{{ reservation.status }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item" *ngIf="reservation.reason">
+                        <div class="detail-icon">
+                            <i class="icon-reason"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>Reason</label>
+                            <span class="value reason">{{ reservation.reason }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Expiry Status Alert -->
+        <div class="expiry-alert modern-alert" [class]="getExpiryStatusClass()">
+            <div class="alert-icon">
+                <i class="expiry-icon"></i>
+            </div>
+            <div class="alert-content">
+                <h4>{{ getExpiryStatusMessage() }}</h4>
+            </div>
+        </div>
+
+        <!-- Enhanced Timeline Card -->
+        <div class="timeline-card modern-card">
+            <div class="card-header">
+                <h3>
+                    <i class="icon-timeline"></i>
+                    Timeline
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="timeline-items">
+                    <div class="timeline-item">
+                        <div class="timeline-marker created">
+                            <i class="icon-created"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <label>Created</label>
+                            <span class="value">{{ formatCreatedDate() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" *ngIf="reservation.expiredDate">
+                        <div class="timeline-marker expires" [class.expired]="isExpired()">
+                            <i class="icon-expires"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <label>Expires</label>
+                            <span class="value" [class.expired]="isExpired()">
+                {{ formatExpiredDate() }}
+              </span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" *ngIf="getDaysUntilExpiry() > 0">
+                        <div class="timeline-marker remaining" [class.warning]="isExpiringSoon()">
+                            <i class="icon-remaining"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <label>Days Remaining</label>
+                            <span class="value days-remaining" [class.warning]="isExpiringSoon()">
+                {{ getDaysUntilExpiry() }} day(s)
+              </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Account Information -->
+        <div class="account-card modern-card" *ngIf="reservation.accountNumber">
+            <div class="card-header">
+                <h3>
+                    <i class="icon-account"></i>
+                    Account Information
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="account-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">
+                            <i class="icon-account-number"></i>
+                        </div>
+                        <div class="detail-content">
+                            <label>Account Number</label>
+                            <span class="value account">{{ reservation.accountNumber }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Actions Section -->
+        <div class="actions-section">
+            <div class="actions-card modern-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="icon-actions"></i>
+                        Available Actions
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="action-buttons">
+                        <button
+                            *ngIf="canProcessPayment() && isBankUser()"
+                            class="process-payment-btn action-btn primary"
+                            (click)="processPayment()">
+                            <i class="icon-payment"></i>
+                            <span>Process Payment</span>
+                        </button>
+
+                        <button
+                            *ngIf="canCancelReservation() && isCnssUser()"
+                            class="cancel-reservation-btn action-btn danger"
+                            (click)="cancelReservation()"
+                            [disabled]="loading">
+                            <i class="icon-cancel"></i>
+                            <span>Cancel Reservation</span>
+                        </button>
+
+                        <button
+                            *ngIf="reservation.status === 'PAID'"
+                            class="completed-btn action-btn success"
+                            disabled>
+                            <i class="icon-completed"></i>
+                            <span>Payment Completed</span>
+                        </button>
+
+                        <button
+                            *ngIf="reservation"
+                            class="download-pdf-btn action-btn secondary"
+                            (click)="downloadPDF()">
+                            <i class="icon-pdf"></i>
+                            <span>Download PDF</span>
+                        </button>
+
+                        <button
+                            *ngIf="reservation.status === 'EXPIRED' || reservation.status === 'CANCELLED' || reservation.status === 'CANCELED'"
+                            class="expired-btn action-btn disabled"
+                            disabled>
+                            <i class="icon-expired"></i>
+                            <span>{{ reservation.status }}</span>
+                        </button>
+
+                        <button class="back-btn-secondary action-btn neutral" (click)="goBack()">
+                            <i class="icon-return"></i>
+                            <span>Return to List</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Payment History Section -->
+        <div class="history-section" *ngIf="reservation.status === 'PAID'">
+            <div class="history-card modern-card success-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="icon-history"></i>
+                        Payment History
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="payment-info">
+                        <div class="payment-success">
+                            <i class="icon-success"></i>
+                            <div class="success-content">
+                                <h4>Payment Successfully Processed</h4>
+                                <div class="payment-details">
+                                    <p><strong>Reference:</strong> {{ reservation.referenceCode }}</p>
+                                    <p><strong>Amount:</strong> {{ reservation.amount | currency:'TND':'symbol':'1.2-2' }}</p>
+                                    <p><strong>Status:</strong> Completed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Enhanced No Reservation Found -->
+    <div *ngIf="!loading && !error && !reservation" class="no-reservation-container">
+        <div class="no-reservation-content">
+            <div class="no-reservation-icon">
+                <i class="icon-not-found"></i>
+            </div>
+            <h3>Reservation Not Found</h3>
+            <p>The requested reservation could not be found or may have been removed.</p>
+            <button class="return-btn modern-btn" (click)="goBack()">
+                <i class="icon-return"></i>
+                Return to Reservations
+            </button>
+        </div>
+    </div>
+</div>

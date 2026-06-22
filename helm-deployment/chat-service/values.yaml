@@ -1,0 +1,24 @@
+replicaCount: 1
+
+image:
+  repository: theoldisback/chat-service
+  tag: "a92f1f0045a7f1d0345d1b7a7e1ba2aaeefb64c0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8088
+
+ingress:
+  enabled: false
+
+resources: {}
+
+autoscaling:
+  enabled: false
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

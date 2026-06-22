@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Width Homepage</title>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="logo">
+        <img src="/assets/images/logo/esprit1.png" alt="Logo" />
+    </div>
+    <div class="auth-buttons">
+        <button class="btn btn-secondary" [routerLink]="['/sign-in']">Sign In</button>
+        <!-- Updated Sign Up button with routerLink -->
+        <button class="btn btn-primary" [routerLink]="['/sign-up']">Sign Up</button>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+
+        <img src="/assets/images/e-lerning.jpg" alt="Feature 1"  />
+
+
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features">
+    <div class="container">
+        <h2 class="section-title">Our Features</h2>
+        <div class="feature-cards">
+            <div class="card">
+                <img src="/assets/images/chat.png" alt="Messenger" />
+                <h3>Messenger</h3>
+                <p>Chat with professors and communicate with students.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/images/bot.png" alt="Chat Bot" />
+                <h3>Chat Bot</h3>
+                <p>Need help with studies? Use our AI-powered chat assistant.</p>
+            </div>
+            <div class="card">
+                <img src="/assets/images/exam.png" alt="Online Exam" />
+                <h3>Online Exam</h3>
+                <p>Take exams online and get instant results.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Video Section -->
+<section id="video" class="video">
+    <div class="container">
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/xFOG_9Y883c" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</section>
+<section id="test" class="features" style="width: 500px; margin-left: 500px;">
+    <div class="container">
+        <div class="feature-cards">
+
+            <div class="card">
+                <img src="/assets/images/meeting.png" alt="Feature 1" width="50px;" height="50px;" />
+                <h3>online session</h3>
+                <span> you can have online meeting  with your professor</span>
+            </div>
+            <div class="card">
+                <img src="/assets/images/reclamation.png" alt="Feature 1" width="50px;" height="50px;" />
+                <h3>online session</h3>
+                <span>something wrong ? you can claim for it no problem with us </span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer id="contact" class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+        </div>
+        <p>© 2025 My Platform. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

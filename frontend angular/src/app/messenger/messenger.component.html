@@ -1,0 +1,117 @@
+<div class="messenger-container">
+    <!-- Sidebar for user list -->
+    <div class="user-list">
+        <div class="sidebar-header">
+            <h3>Messages</h3>
+            <div class="user-count">{{ users.length }} contacts</div>
+        </div>
+        
+        <div class="users-container">
+            <div class="user-item"
+                *ngFor="let user of users"
+                [class.active]="user.id === receiverId"
+                (click)="selectUser(user.id)">
+                
+                <div class="user-avatar">
+                    {{ (user.firstName?.[0] || '') + (user.lastName?.[0] || '') }}
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+                    <div class="user-email">{{ user.email }}</div>
+                </div>
+                
+                <div class="user-status online"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main chat area -->
+    <div class="chat-area">
+        <!-- Chat header -->
+        <div class="chat-header" *ngIf="receiverId">
+            <div class="chat-user-info">
+                <div class="chat-avatar">
+                    {{ getSelectedUserInitials() }}
+                </div>
+                <div class="chat-user-details">
+                    <div class="chat-user-name">{{ getSelectedUserName() }}</div>
+                    <div class="chat-user-status">Active now</div>
+                </div>
+            </div>
+            
+            <div class="chat-actions">
+                <button class="action-btn">
+                    <i class="fas fa-phone"></i>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-video"></i>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages Display -->
+        <div class="message-list" #messageList>
+            <div class="message-wrapper" *ngFor="let message of messages; let last = last">
+                <div class="message"
+                    [class.sent]="message.senderId === senderId"
+                    [class.received]="message.senderId !== senderId">
+                    
+                    <div class="message-content">
+                        <p>{{ message.content }}</p>
+                    </div>
+                    
+                    <div class="message-time">
+                        {{ message.timestamp | date: 'short' }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty state -->
+            <div class="empty-chat" *ngIf="messages.length === 0 && receiverId">
+                <div class="empty-icon">💬</div>
+                <p>Start your conversation</p>
+                <span>Send a message to get the conversation started!</span>
+            </div>
+        </div>
+
+        <!-- No user selected state -->
+        <div class="no-user-selected" *ngIf="!receiverId">
+            <div class="no-user-icon">🔄</div>
+            <h3>Select a conversation</h3>
+            <p>Choose from your existing conversations or start a new one</p>
+        </div>
+
+        <!-- Input area -->
+        <div class="message-input-container" *ngIf="receiverId">
+            <div class="input-wrapper">
+                <button class="attachment-btn">
+                    <i class="fas fa-paperclip"></i>
+                </button>
+                
+                <textarea
+                    [(ngModel)]="messageContent"
+                    placeholder="Type a message..."
+                    class="message-input"
+                    rows="1"
+                    (keydown.enter)="onEnterPressed($event)"
+                    [disabled]="!receiverId"
+                    #messageInput></textarea>
+                
+                <button class="emoji-btn">
+                    <i class="fas fa-smile"></i>
+                </button>
+                
+                <button 
+                    class="send-btn"
+                    (click)="sendMessage()" 
+                    [disabled]="!messageContent.trim() || !receiverId">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

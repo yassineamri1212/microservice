@@ -1,0 +1,212 @@
+<div class="signature-pad-container">
+  <div class="signature-header">
+    <h2>Digital Signature Pad</h2>
+    <p>Draw your signature below</p>
+    
+    <!-- Reservation Information Display -->
+    <div *ngIf="reservationId && cin" class="reservation-info">
+      <h3>Signature Verification</h3>
+      <div class="info-row">
+        <span class="label">Reservation ID:</span>
+        <span class="value">{{ reservationId }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">CIN:</span>
+        <span class="value">{{ cin }}</span>
+      </div>
+      
+      <!-- Reservation and signature status -->
+      <div class="signature-status" *ngIf="!isProcessing">
+        <div *ngIf="reservationHasSignature" class="status-item status-blocked">
+          <i class="icon-error-circle"></i>
+          <span>This reservation already has a signature</span>
+        </div>
+        <div *ngIf="!reservationHasSignature && hasExistingSignature" class="status-item status-verify">
+          <i class="icon-check-circle"></i>
+          <span>Reservation available - will verify against your existing signature</span>
+        </div>
+        <div *ngIf="!reservationHasSignature && !hasExistingSignature" class="status-item status-new">
+          <i class="icon-plus-circle"></i>
+          <span>Reservation available - will save your first signature</span>
+        </div>
+      </div>
+      
+      <p class="verification-note" *ngIf="!reservationHasSignature">
+        {{ hasExistingSignature ? 
+           'Please provide your signature for verification against your existing signature for this reservation.' : 
+           'Please provide your signature to register it for this reservation and future verifications.' }}
+      </p>
+      
+      <p class="error-note" *ngIf="reservationHasSignature">
+        This reservation has already been signed. No additional signatures are allowed.
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isProcessing" class="loading-indicator">
+    <div class="spinner"></div>
+    <p>{{ hasExistingSignature ? 'Verifying signature...' : 'Saving signature...' }}</p>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    <i class="icon-check-circle"></i>
+    {{ successMessage }}
+  </div>
+  
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <i class="icon-error-circle"></i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Verification Results -->
+  <div *ngIf="showResults && verificationResult" class="verification-results">
+    <div class="result-header">
+      <h3>{{ verificationResult.match ? '✅ Signature Verified' : '❌ Signature Rejected' }}</h3>
+      <p class="result-message">{{ verificationResult.message }}</p>
+    </div>
+    
+    <div class="result-content">
+      <div class="result-score">
+        <div class="score-label">Similarity Score:</div>
+        <div class="score-value" [ngClass]="{
+          'high-confidence': verificationResult.similarityScore >= 0.85,
+          'medium-confidence': verificationResult.similarityScore >= 0.65 && verificationResult.similarityScore < 0.85,
+          'low-confidence': verificationResult.similarityScore < 0.65
+        }">
+          {{ (verificationResult.similarityScore * 100).toFixed(1) }}%
+        </div>
+        <div class="score-description">
+          {{ verificationResult.similarityScore >= 0.85 ? 'High confidence match' : 
+             verificationResult.similarityScore >= 0.65 ? 'Medium confidence' : 'Low confidence' }}
+        </div>
+      </div>
+      
+      <div *ngIf="verificationResult.verificationDetails" class="verification-details">
+        <span>{{ verificationResult.verificationDetails }}</span>
+      </div>
+      
+      <div *ngIf="verificationResult.verifiedAgainstSignatureId" class="matched-signature">
+        <span>Verified against signature ID: {{ verificationResult.verifiedAgainstSignatureId }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="signatures-container">
+    <!-- Existing Signature Display -->
+    <div *ngIf="hasExistingSignature && existingSignature" class="existing-signature-section">
+      <div class="existing-signature-header">
+        <h3>Your Existing Signature</h3>
+        <p class="existing-signature-info">
+          Created: {{ formatDate(existingSignature.createdAt) }}
+        </p>
+      </div>
+      
+      <div class="existing-signature-display">
+        <img 
+          *ngIf="existingSignature.signatureData && existingSignature.signatureData.startsWith('data:image')"
+          [src]="existingSignature.signatureData" 
+          [alt]="'Existing signature for ' + cin"
+          class="existing-signature-image"
+          (error)="onImageError($event)">
+        
+        <div *ngIf="!existingSignature.signatureData || !existingSignature.signatureData.startsWith('data:image')" 
+             class="loading-signature">
+          <div class="spinner-small"></div>
+          <p>Loading signature image...</p>
+        </div>
+        
+        <div class="existing-signature-details">
+          <div class="detail-item">
+            <span class="detail-label">Type:</span>
+            <span class="detail-value">{{ existingSignature.signatureType }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Purpose:</span>
+            <span class="detail-value">{{ existingSignature.purpose }}</span>
+          </div>
+          <div class="detail-item" *ngIf="existingSignature.notes">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">{{ existingSignature.notes }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Current Signature Canvas -->
+    <div class="current-signature-section">
+      <div class="current-signature-header">
+        <h3>{{ hasExistingSignature ? 'Draw Your Signature for Verification' : 'Draw Your New Signature' }}</h3>
+        <p class="current-signature-info">
+          {{ hasExistingSignature ? 
+             'Draw your signature to compare with the existing one above' : 
+             'This will be saved as your signature for future verifications' }}
+        </p>
+      </div>
+
+      <div class="signature-canvas-wrapper">
+        <canvas 
+          #canvas
+          class="signature-canvas"
+          [class.disabled]="isProcessing || reservationHasSignature"
+          width="600" 
+          height="300">
+          Your browser does not support the HTML5 canvas tag.
+        </canvas>
+        
+        <div *ngIf="reservationHasSignature" class="canvas-overlay">
+          <div class="overlay-message">
+            <i class="icon-lock"></i>
+            <p>Signature already exists for this reservation</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signature-controls">
+    <button 
+      class="btn btn-clear"
+      [disabled]="isProcessing || reservationHasSignature"
+      (click)="clearSignature()">
+      <i class="icon-clear"></i>
+      Clear
+    </button>
+    
+    <!-- Verify Button - Compare with existing signature -->
+    <button 
+      class="btn btn-verify"
+      *ngIf="hasExistingSignature && existingSignature"
+      [disabled]="isProcessing || reservationHasSignature"
+      (click)="verifySignatureOnly()">
+      <i class="icon-compare"></i>
+      Verify Only
+    </button>
+    
+    <!-- Save Button - Always available for saving -->
+    <button 
+      class="btn btn-save"
+      [disabled]="isProcessing || reservationHasSignature"
+      (click)="saveSignatureWithVerification()">
+      <i class="icon-save"></i>
+      Save Signature
+    </button>
+    
+    <button 
+      class="btn btn-retry"
+      *ngIf="showResults"
+      [disabled]="isProcessing || reservationHasSignature"
+      (click)="retrySignature()">
+      <i class="icon-refresh"></i>
+      Try Again
+    </button>
+  </div>
+
+  <div class="signature-info">
+    <p><small>Use your finger or stylus to draw your signature above</small></p>
+    <div *ngIf="hasExistingSignature && existingSignature" class="existing-signature-info">
+      <p><small>Last signature created: {{ existingSignature.createdAt | date:'medium' }}</small></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+replicaCount: 1
+
+image:
+  repository: theoldisback/notification-service
+  tag: 5063967d9b37d0b78981ff6aa96bf366e20a75ad
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8087
+
+# Optimized resource configuration for minikube
+resources:
+  limits:
+    cpu: 300m
+    memory: 384Mi
+  requests:
+    cpu: 100m
+    memory: 192Mi
+
+# JVM optimization for notification service
+jvm:
+  heapSize: "192m"
+  options: "-Xms96m -Xmx192m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+
+# Auto-restart configuration
+restartPolicy: Always
+
+# Health probes
+livenessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8087
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  timeoutSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8087
+  initialDelaySeconds: 60
+  periodSeconds: 15
+  timeoutSeconds: 5
+
+# Environment variables for optimization
+env:
+  SPRING_PROFILES_ACTIVE: "minikube"
+  EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/"
+  SERVER_TOMCAT_MAX_THREADS: "30"
+  SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "3"
+  LOGGING_LEVEL_ROOT: "WARN"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info"
+  SPRING_RABBITMQ_HOST: "rabbitmq.default.svc.cluster.local"

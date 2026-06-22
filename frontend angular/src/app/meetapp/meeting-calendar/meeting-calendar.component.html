@@ -1,0 +1,561 @@
+<div class="meeting-calendar-container">
+    <!-- Enhanced Header Section -->
+    <div class="header-section">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <i class="icon-calendar"></i>
+                    Meeting Calendar
+                </h1>
+                <p class="page-subtitle">Schedule and manage your meetings with ease</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Main Content with Side-by-Side Layout -->
+    <div class="main-content">
+
+        <!-- Left Column: Modern Calendar -->
+        <div class="calendar-section">
+            <div class="calendar-container modern-card">
+                <div class="card-header">
+                    <h2>
+                        <i class="icon-calendar-days"></i>
+                        Select Date
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                    <!-- Modern Calendar Widget -->
+                    <div class="modern-calendar">
+                        <div id="calendar" class="calendar-widget"></div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="calendar-actions" *ngIf="selectedDate">
+                        <div class="selected-date-info">
+                            <div class="date-display">
+                                <span class="date-day">{{ getDayOfWeek(selectedDate) }}</span>
+                                <span class="date-full">{{ formatSelectedDate(selectedDate) }}</span>
+                            </div>
+                        </div>
+
+                        <button class="schedule-btn action-btn primary" (click)="showAddMeetingModal()">
+                            <i class="icon-plus"></i>
+                            Schedule Meeting
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Meetings Display -->
+        <div class="meetings-section">
+
+            <!-- Enhanced Meeting Header -->
+            <div class="meetings-header modern-card" *ngIf="selectedDate">
+                <div class="card-header">
+                    <div class="header-info">
+                        <h3>
+                            <i class="icon-meetings"></i>
+                            Your Meetings
+                        </h3>
+                        <div class="meeting-stats">
+              <span class="meeting-count">
+                <i class="icon-count"></i>
+                  {{ filteredMeetings.length }} {{ filteredMeetings.length === 1 ? 'meeting' : 'meetings' }}
+              </span>
+                            <span class="date-badge">{{ getDayOfWeek(selectedDate) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Loading State -->
+            <div *ngIf="isLoading" class="enhanced-state loading-state modern-card">
+                <div class="card-body">
+                    <div class="state-content">
+                        <div class="loading-spinner-modern">
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-icon">
+                                <i class="icon-loading"></i>
+                            </div>
+                        </div>
+                        <h3 class="state-title">Loading meetings...</h3>
+                        <p class="state-description">Please wait while we fetch your scheduled meetings.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Error State -->
+            <div *ngIf="error && !isLoading" class="enhanced-state error-state modern-card">
+                <div class="card-body">
+                    <div class="state-content">
+                        <div class="error-icon">
+                            <i class="icon-error"></i>
+                        </div>
+                        <h3 class="state-title">Something went wrong</h3>
+                        <p class="state-description">{{ error }}</p>
+                        <button class="retry-btn action-btn secondary" (click)="loadMeetings()">
+                            <i class="icon-refresh"></i>
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Meetings List -->
+            <div *ngIf="!isLoading && !error && filteredMeetings.length > 0" class="meetings-list">
+                <div *ngFor="let meeting of filteredMeetings; let i = index"
+                     class="meeting-card modern-card"
+                     [class.starting-soon]="isMeetingStartingSoon(meeting.startTime)"
+                     [class.past-meeting]="isPastMeeting(meeting.startTime)">
+
+                    <!-- Meeting Status Badge -->
+                    <div class="meeting-status-badge">
+            <span *ngIf="isMeetingStartingSoon(meeting.startTime)" class="status-badge starting-soon">
+              <i class="icon-clock"></i>
+              Starting Soon
+            </span>
+                        <span *ngIf="isPastMeeting(meeting.startTime)" class="status-badge past">
+              <i class="icon-history"></i>
+              Ended
+            </span>
+                        <span *ngIf="!isMeetingStartingSoon(meeting.startTime) && !isPastMeeting(meeting.startTime)" class="status-badge upcoming">
+              <i class="icon-upcoming"></i>
+              Upcoming
+            </span>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Meeting Header -->
+                        <div class="meeting-header-card">
+                            <div class="meeting-title-section">
+                                <h4 class="meeting-topic">
+                                    <i class="icon-video"></i>
+                                    {{ meeting.topic }}
+                                </h4>
+                                <p class="meeting-number">Meeting #{{ i + 1 }}</p>
+                                <div class="meeting-badges">
+                  <span class="meeting-role-badge"
+                        [style.background-color]="getMeetingRoleColor(meeting)">
+                    {{ getCurrentUserRoleInMeeting(meeting) }}
+                  </span>
+                                </div>
+                            </div>
+                            <div class="meeting-capacity">
+                                <span class="capacity-label">Max Participants</span>
+                                <span class="capacity-value">{{ meeting.maxParticipants }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Meeting Details -->
+                        <div class="meeting-details">
+                            <div class="meeting-description-section">
+                                <label class="detail-label">
+                                    <i class="icon-info"></i>
+                                    Description
+                                </label>
+                                <p class="meeting-description">{{ meeting.description }}</p>
+                            </div>
+
+                            <div class="meeting-meta-grid">
+                                <div class="meta-item">
+                                    <label class="meta-label">
+                                        <i class="icon-time"></i>
+                                        Time
+                                    </label>
+                                    <span class="meta-value">{{ formatMeetingTime(meeting.startTime) }}</span>
+                                </div>
+
+                                <div class="meta-item">
+                                    <label class="meta-label">
+                                        <i class="icon-organizer"></i>
+                                        Organizer
+                                    </label>
+                                    <span class="meta-value" [class.current-user-highlight]="meeting.createdBy === currentUserEmail">
+                    {{ meeting.createdBy }}
+                                        <i class="icon-crown" *ngIf="meeting.createdBy === currentUserEmail" title="This is you!"></i>
+                  </span>
+                                </div>
+
+                                <div class="meta-item">
+                                    <label class="meta-label">
+                                        <i class="icon-room"></i>
+                                        Room ID
+                                    </label>
+                                    <span class="meta-value room-id">{{ meeting.roomName }}</span>
+                                </div>
+
+                                <div class="meta-item" *ngIf="meeting.endTime">
+                                    <label class="meta-label">
+                                        <i class="icon-duration"></i>
+                                        Duration
+                                    </label>
+                                    <span class="meta-value">{{ calculateDuration(meeting.startTime, meeting.endTime) }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Participants Info -->
+                            <div class="participants-info" *ngIf="meeting.participants || meeting.isPublic !== undefined">
+                                <label class="detail-label">
+                                    <i class="icon-users"></i>
+                                    Access Type
+                                </label>
+                                <div class="access-type">
+                  <span class="access-badge" [class.public]="meeting.isPublic" [class.private]="!meeting.isPublic">
+                    <i class="icon-globe" *ngIf="meeting.isPublic"></i>
+                    <i class="icon-lock" *ngIf="!meeting.isPublic"></i>
+                      {{ meeting.isPublic ? 'Public Meeting' : 'Private Meeting' }}
+                  </span>
+                                    <span *ngIf="!meeting.isPublic && meeting.participants" class="participants-count">
+                    {{ getParticipantCount(meeting.participants) }} invited
+                  </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Action Buttons -->
+                        <div class="meeting-actions">
+                            <button class="join-btn action-btn primary"
+                                    (click)="joinMeeting(meeting.roomName)"
+                                    [class.pulse]="isMeetingStartingSoon(meeting.startTime)"
+                                    [disabled]="isPastMeeting(meeting.startTime)">
+                                <i class="icon-join"></i>
+                                <span>{{ isPastMeeting(meeting.startTime) ? 'Meeting Ended' : 'Join Meeting' }}</span>
+                            </button>
+
+                            <button class="copy-link-btn action-btn secondary"
+                                    (click)="copyMeetingLink(meeting.roomName)"
+                                    title="Copy meeting link">
+                                <i class="icon-link"></i>
+                                <span>Copy Link</span>
+                            </button>
+
+                            <!-- Delete Button (only for organizers) -->
+                            <button *ngIf="canDeleteMeeting(meeting)"
+                                    class="delete-btn action-btn danger"
+                                    (click)="deleteMeeting(meeting)"
+                                    title="Delete meeting">
+                                <i class="icon-delete"></i>
+                                <span>Delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced No Meetings State -->
+            <div *ngIf="!isLoading && !error && filteredMeetings.length === 0 && selectedDate"
+                 class="empty-state no-meetings modern-card">
+                <div class="card-body">
+                    <div class="empty-state-content">
+                        <div class="empty-state-icon">
+                            <i class="icon-no-meetings"></i>
+                        </div>
+                        <h3 class="empty-state-title">No meetings scheduled</h3>
+                        <p class="empty-state-description">
+                            You don't have any meetings scheduled for {{ formatSelectedDate(selectedDate) }}.
+                            <br>Create a new meeting or wait to be invited to existing ones!
+                        </p>
+                        <button class="empty-state-action action-btn primary" (click)="showAddMeetingModal()">
+                            <i class="icon-plus"></i>
+                            Schedule Meeting
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced No Date Selected State -->
+            <div *ngIf="!selectedDate && !isLoading" class="empty-state no-date-selected modern-card">
+                <div class="card-body">
+                    <div class="empty-state-content">
+                        <div class="empty-state-icon">
+                            <i class="icon-calendar-select"></i>
+                        </div>
+                        <h3 class="empty-state-title">Welcome to Meeting Calendar</h3>
+                        <p class="empty-state-description">
+                            Select a date from the calendar to view scheduled meetings.
+                            <br>You can also create new meetings for any available date.
+                        </p>
+                        <div class="empty-state-features">
+                            <div class="feature-item">
+                                <i class="icon-video-feature"></i>
+                                <span>Video Conferencing</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="icon-users-feature"></i>
+                                <span>Participant Management</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="icon-schedule-feature"></i>
+                                <span>Easy Scheduling</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Modal for Adding a New Meeting -->
+    <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+        <div class="modal modern-card" (click)="$event.stopPropagation()">
+            <div class="card-header">
+                <h3>
+                    <i class="icon-schedule"></i>
+                    Schedule New Meeting
+                </h3>
+                <button class="close-btn" (click)="closeModal()">
+                    <i class="icon-close"></i>
+                </button>
+            </div>
+
+            <div class="card-body">
+                <!-- Error Display -->
+                <div *ngIf="error" class="error-message modern-alert">
+                    <div class="alert-icon">
+                        <i class="icon-warning"></i>
+                    </div>
+                    <div class="alert-content">
+                        <p>{{ error }}</p>
+                    </div>
+                </div>
+
+                <!-- Meeting Form -->
+                <div class="meeting-form">
+                    <!-- Meeting Topic -->
+                    <div class="form-group">
+                        <label for="topic" class="form-label">
+                            <i class="icon-topic"></i>
+                            Meeting Topic *
+                        </label>
+                        <input
+                            id="topic"
+                            [(ngModel)]="newMeetingTopic"
+                            placeholder="Enter meeting topic"
+                            class="form-input modern-input"
+                            required
+                        />
+                    </div>
+
+                    <!-- Meeting Description -->
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            <i class="icon-description"></i>
+                            Description *
+                        </label>
+                        <textarea
+                            id="description"
+                            [(ngModel)]="newMeetingDescription"
+                            placeholder="Enter meeting description"
+                            class="form-textarea modern-input"
+                            rows="3"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Time and Duration -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="time" class="form-label">
+                                <i class="icon-time"></i>
+                                Time
+                            </label>
+                            <input
+                                id="time"
+                                type="time"
+                                [(ngModel)]="newMeetingTime"
+                                class="form-input modern-input"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="duration" class="form-label">
+                                <i class="icon-duration"></i>
+                                Duration
+                            </label>
+                            <select id="duration" [(ngModel)]="newMeetingDuration" class="form-select modern-input">
+                                <option value="30">30 minutes</option>
+                                <option value="60">1 hour</option>
+                                <option value="90">1.5 hours</option>
+                                <option value="120">2 hours</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Class Selection -->
+                    <div class="form-group" *ngIf="classes.length > 0">
+                        <label for="class" class="form-label">
+                            <i class="icon-class"></i>
+                            Class (Optional)
+                        </label>
+                        <select id="class" [(ngModel)]="selectedClassId" class="form-select modern-input">
+                            <option value="">Select a class...</option>
+                            <option *ngFor="let classItem of classes" [value]="classItem.id">
+                                {{ classItem.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Meeting Visibility -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="icon-visibility"></i>
+                            Meeting Access
+                        </label>
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    [(ngModel)]="isPublicMeeting"
+                                    (change)="toggleMeetingVisibility()"
+                                />
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">
+                {{ isPublicMeeting ? 'Public Meeting' : 'Private Meeting' }}
+              </span>
+                        </div>
+                        <small class="form-hint">
+                            {{ isPublicMeeting ? 'Anyone with the link can join' : 'Only invited participants can join' }}
+                        </small>
+                    </div>
+
+                    <!-- Participants Selection (for private meetings) -->
+                    <div class="form-group participants-section" *ngIf="!isPublicMeeting">
+                        <label class="form-label">
+                            <i class="icon-participants"></i>
+                            Invite Participants *
+                        </label>
+
+                        <!-- Current User Auto-Added -->
+                        <div class="current-user-indicator" *ngIf="currentUserEmail">
+                            <div class="current-user-card">
+                                <div class="user-avatar-auto">
+                                    <i class="icon-user-organizer"></i>
+                                </div>
+                                <div class="user-info-auto">
+                                    <div class="user-name-auto">{{ currentUserName }} (You)</div>
+                                    <div class="user-email-auto">{{ currentUserEmail }}</div>
+                                    <div class="auto-added-label">
+                                        <i class="icon-check"></i>
+                                        Automatically added as organizer
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Select Users -->
+                        <div class="participants-quick-select">
+                            <h4>Select Additional Users:</h4>
+
+                            <!-- Loading state -->
+                            <div *ngIf="isLoadingUsers" class="loading-users">
+                                <div class="loading-spinner"></div>
+                                <span>Loading users...</span>
+                            </div>
+
+                            <!-- User cards -->
+                            <div class="user-cards" *ngIf="!isLoadingUsers">
+                                <div *ngFor="let userWithRole of availableUsers"
+                                     class="user-card"
+                                     [class.selected]="isUserSelected(userWithRole.user.email)"
+                                     (click)="addParticipant(userWithRole)">
+
+                                    <!-- Avatar -->
+                                    <div class="user-avatar-container">
+                                        <ng-container *ngIf="userWithRole.hasAvatarImage; else defaultUserAvatar">
+                                            <img class="user-avatar-img"
+                                                 [src]="getAvatarImagePath(userWithRole.user)"
+                                                 [alt]="userWithRole.user.firstName + ' ' + userWithRole.user.lastName">
+                                        </ng-container>
+                                        <ng-template #defaultUserAvatar>
+                                            <div class="user-avatar-initials"
+                                                 [style.background-color]="getRoleColor(userWithRole.primaryRole || 'User')">
+                                                {{ userWithRole.avatar }}
+                                            </div>
+                                        </ng-template>
+                                    </div>
+
+                                    <!-- User info -->
+                                    <div class="user-info">
+                                        <div class="user-name">
+                                            {{ userWithRole.user.firstName }} {{ userWithRole.user.lastName }}
+                                        </div>
+                                        <div class="user-email">
+                                            {{ userWithRole.user.email }}
+                                        </div>
+                                        <div class="user-role" [style.color]="getRoleColor(userWithRole.primaryRole || 'User')">
+                                            <i class="icon-role"></i>
+                                            {{ userWithRole.primaryRole || 'User' }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Selection indicator -->
+                                    <div class="selection-indicator" *ngIf="isUserSelected(userWithRole.user.email)">
+                                        <i class="icon-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual Email Entry -->
+                        <div class="participants-manual">
+                            <label for="participantEmails" class="form-label">Or enter emails manually:</label>
+                            <textarea
+                                id="participantEmails"
+                                [(ngModel)]="participantEmails"
+                                placeholder="Enter participant emails, separated by commas&#10;e.g., user1@example.com, user2@example.com"
+                                class="form-textarea modern-input"
+                                rows="3"
+                            ></textarea>
+                        </div>
+
+                        <!-- Selected Participants Display -->
+                        <div class="selected-participants" *ngIf="selectedParticipants.length > 0">
+                            <h4>Selected Participants:</h4>
+                            <div class="participant-tags">
+                <span *ngFor="let participant of selectedParticipants"
+                      class="participant-tag"
+                      [class.current-user-tag]="participant === currentUserEmail">
+                  {{ participant }}
+                    <span *ngIf="participant === currentUserEmail" class="organizer-badge">
+                    <i class="icon-star"></i>
+                    Organizer
+                  </span>
+                  <button type="button"
+                          (click)="removeParticipant(participant)"
+                          class="remove-participant"
+                          [disabled]="participant === currentUserEmail"
+                          [title]="participant === currentUserEmail ? 'Cannot remove organizer' : 'Remove participant'">
+                    <i class="icon-remove"></i>
+                  </button>
+                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Actions -->
+            <div class="card-footer">
+                <div class="modal-actions">
+                    <button class="submit-btn action-btn primary"
+                            (click)="submitNewMeeting()"
+                            [disabled]="isLoading || !newMeetingTopic || !newMeetingDescription">
+                        <i class="icon-check" *ngIf="!isLoading"></i>
+                        <i class="icon-spinner" *ngIf="isLoading"></i>
+                        {{ isLoading ? 'Creating...' : 'Create Meeting' }}
+                    </button>
+                    <button class="cancel-btn action-btn secondary"
+                            (click)="closeModal()"
+                            [disabled]="isLoading">
+                        <i class="icon-close"></i>
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,177 @@
+<div class="flex flex-col flex-auto min-w-0">
+    
+    <!-- Modern Header -->
+    <div class="edit-profile-header">
+        <div class="header-background">
+            <div class="header-content">
+                <div class="header-info">
+                    <div class="header-icon">
+                        <mat-icon>edit</mat-icon>
+                    </div>
+                    <div class="header-text">
+                        <h1 class="header-title">Edit Profile</h1>
+                        <p class="header-subtitle">Update your personal information and preferences</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button mat-icon-button class="back-button" routerLink="/User/profile">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="edit-profile-content">
+        <div class="content-container">
+            
+            <!-- Edit Form Card -->
+            <div class="edit-form-card">
+                <form [formGroup]="UserForm" (ngSubmit)="onSubmit()" class="edit-form">
+                    
+                    <!-- Avatar Selection Section -->
+                    <div class="form-section avatar-section">
+                        <div class="section-header">
+                            <mat-icon>account_circle</mat-icon>
+                            <h2>Profile Picture</h2>
+                        </div>
+                        
+                        <div class="current-avatar-display">
+                            <div class="current-avatar-container">
+                                <img [src]="'assets/images/avatars/' + (image || 'default.jpg')" 
+                                     [alt]="'Current avatar'" 
+                                     class="current-avatar">
+                                <div class="avatar-overlay">
+                                    <mat-icon>camera_alt</mat-icon>
+                                </div>
+                            </div>
+                            <p class="avatar-label">Current Avatar</p>
+                        </div>
+                        
+                        <div class="avatar-selection">
+                            <p class="selection-label">Choose a new avatar:</p>
+                            <div class="avatar-grid">
+                                <div *ngFor="let avatar of avatars" 
+                                     class="avatar-option"
+                                     [class.selected]="UserForm.get('avatar')?.value === avatar"
+                                     (click)="selectAvatar(avatar)">
+                                    <img [src]="'assets/images/avatars/' + avatar" 
+                                         [alt]="avatar" 
+                                         class="avatar-option-img">
+                                    <div class="selection-indicator">
+                                        <mat-icon>check_circle</mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information Section -->
+                    <div class="form-section personal-info-section">
+                        <div class="section-header">
+                            <mat-icon>person</mat-icon>
+                            <h2>Personal Information</h2>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-row">
+                                <mat-form-field appearance="outline" class="form-field">
+                                    <mat-label>Username</mat-label>
+                                    <input formControlName="username" matInput readonly>
+                                    <mat-icon matSuffix>lock</mat-icon>
+                                    <mat-hint>Username cannot be changed for security reasons</mat-hint>
+                                    <mat-error *ngIf="UserForm.get('username')?.hasError('required')">
+                                        Username is required
+                                    </mat-error>
+                                </mat-form-field>
+                                
+                                <mat-form-field appearance="outline" class="form-field">
+                                    <mat-label>Email Address</mat-label>
+                                    <input formControlName="email" matInput type="email">
+                                    <mat-icon matSuffix>email</mat-icon>
+                                    <mat-hint>Email will be validated for uniqueness when updating</mat-hint>
+                                    <mat-error *ngIf="UserForm.get('email')?.hasError('required')">
+                                        Email is required
+                                    </mat-error>
+                                    <mat-error *ngIf="UserForm.get('email')?.hasError('email')">
+                                        Please enter a valid email
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            
+                            <div class="form-row">
+                                <mat-form-field appearance="outline" class="form-field">
+                                    <mat-label>First Name</mat-label>
+                                    <input formControlName="firstName" matInput>
+                                    <mat-icon matSuffix>person</mat-icon>
+                                    <mat-error *ngIf="UserForm.get('firstName')?.hasError('required')">
+                                        First name is required
+                                    </mat-error>
+                                </mat-form-field>
+                                
+                                <mat-form-field appearance="outline" class="form-field">
+                                    <mat-label>Last Name</mat-label>
+                                    <input formControlName="lastName" matInput>
+                                    <mat-icon matSuffix>person</mat-icon>
+                                    <mat-error *ngIf="UserForm.get('lastName')?.hasError('required')">
+                                        Last name is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div class="form-section contact-info-section">
+                        <div class="section-header">
+                            <mat-icon>contact_phone</mat-icon>
+                            <h2>Contact Information</h2>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-row">
+                                <mat-form-field appearance="outline" class="form-field">
+                                    <mat-label>Phone Number</mat-label>
+                                    <input formControlName="phoneNumber" matInput type="tel">
+                                    <mat-icon matSuffix>phone</mat-icon>
+                                </mat-form-field>
+                            </div>
+                            
+                            <div class="form-row full-width">
+                                <mat-form-field appearance="outline" class="form-field">
+                                    <mat-label>Address</mat-label>
+                                    <textarea formControlName="adresse" 
+                                              matInput 
+                                              rows="3"
+                                              placeholder="Enter your full address">
+                                    </textarea>
+                                    <mat-icon matSuffix>location_on</mat-icon>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button mat-stroked-button 
+                                type="button" 
+                                class="cancel-button"
+                                routerLink="/User/profile">
+                            <mat-icon>close</mat-icon>
+                            Cancel
+                        </button>
+                        
+                        <button mat-flat-button 
+                                type="submit" 
+                                class="save-button"
+                                [disabled]="!UserForm.valid">
+                            <mat-icon>save</mat-icon>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

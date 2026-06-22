@@ -1,0 +1,55 @@
+# This file provides custom values for the grafana/loki-stack Helm chart.
+# For a local Minikube setup, we can use a minimal configuration to save resources.
+
+# Loki is the log storage backend.
+loki:
+  # Resource optimization for minikube
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  
+  persistence:
+    # For local testing with Minikube, persistence can be disabled.
+    # This means logs will be lost if the Loki pod restarts.
+    enabled: false
+  
+  # Loki configuration for minimal resource usage
+  config:
+    limits_config:
+      retention_period: 24h
+      max_look_back_period: 24h
+    table_manager:
+      retention_deletes_enabled: true
+      retention_period: 24h
+
+# Promtail is the agent that collects logs. It is enabled by default and will
+# automatically find and scrape logs from your application pods.
+promtail:
+  enabled: true
+  # Resource optimization for promtail
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+# We will install Grafana separately to have more control over its configuration,
+# so we disable the Grafana instance that is bundled with the loki-stack.
+grafana:
+  enabled: false
+
+# The following components are not needed for a basic setup.
+fluent-bit:
+  enabled: false
+prometheus:
+  enabled: false
+alertmanager:
+  enabled: false
+nginx:
+  enabled: false

@@ -1,0 +1,122 @@
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+
+    <mat-drawer-container
+        class="flex-auto h-full bg-card dark:bg-transparent"
+        (backdropClick)="onBackdropClicked()">
+
+        <!-- Drawer -->
+        <mat-drawer
+            class="w-full sm:w-100 dark:bg-gray-900"
+            [mode]="drawerMode"
+            [opened]="false"
+            [position]="'end'"
+            [disableClose]="true"
+            #matDrawer>
+            <router-outlet></router-outlet>
+        </mat-drawer>
+
+        <mat-drawer-content class="flex flex-col bg-gray-100 dark:bg-transparent">
+
+            <!-- Main -->
+            <div class="flex flex-col flex-auto">
+
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between p-6 sm:py-12 md:px-8 border-b bg-card dark:bg-transparent">
+                    <!-- Title -->
+                    <div>
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Files</div>
+                        <div class="flex items-center mt-0.5 font-medium text-secondary">
+
+                            <!-- Breadcrumbs -->
+                            <ng-container *ngIf="cours.length">
+                                <div class="flex items-center space-x-2">
+                                    <a
+                                        class="text-primary cursor-pointer"
+                                        [routerLink]="['/apps/file-manager']">Home
+                                    </a>
+                                    <div class="">/</div>
+
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="mt-4 sm:mt-0">
+                        <!-- Upload button -->
+                        <button
+                            mat-flat-button
+                            (click)="uploadfile()"
+                            [color]="'primary'">
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <span class="ml-2 mr-1">Upload file</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Items list -->
+                <ng-container *ngIf="cours && (cours.length > 0 || cours.length > 0); else noItems">
+                    <div class="p-6 md:p-8 space-y-8">
+                        <!-- Folders -->
+
+                        <!-- Files -->
+                        <ng-container *ngIf="cours.length > 0">
+                            <div>
+                                <div class="font-medium">Files</div>
+                                <div
+                                    class="flex flex-wrap -m-2 mt-2">
+                                    <ng-container *ngFor="let file of cours; trackBy:trackByFn">
+                                        <a
+                                            class="flex flex-col w-40 h-40 m-2 p-4 shadow rounded-2xl cursor-pointer bg-card"
+                                            [routerLink]="['./details/', file.id]">
+                                            <div class="aspect-[9/6]">
+                                                <div class="flex items-center justify-center h-full">
+                                                    <!-- Icons -->
+                                                    <div class="relative">
+                                                        <mat-icon
+                                                            class="icon-size-14 text-hint opacity-50"
+                                                            [svgIcon]="'heroicons_solid:document'"></mat-icon>
+                                                        <div
+                                                            class="absolute left-0 bottom-0 px-1.5 rounded text-sm font-semibold leading-5 text-white"
+                                                            [class.bg-red-600]="file.type === 'PDF'"
+                                                            [class.bg-blue-600]="file.type === 'DOC'"
+                                                            [class.bg-green-600]="file.type === 'XLS'"
+                                                            [class.bg-gray-600]="file.type === 'TXT'"
+                                                            [class.bg-amber-600]="file.type === 'JPG'">
+                                                            {{file.type.toUpperCase()}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex flex-col flex-auto justify-center text-center text-sm font-medium">
+                                                <div
+                                                    class="truncate"
+                                                    [matTooltip]="file.name">{{file.name}}</div>
+                                                <ng-container *ngIf="file.contents">
+                                                    <div class="text-secondary truncate">{{file.contents}}</div>
+                                                </ng-container>
+                                            </div>
+                                        </a>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+
+                <!-- No items template -->
+                <ng-template #noItems>
+                    <div class="flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent">
+                        <mat-icon
+                            class="icon-size-24"
+                            [svgIcon]="'heroicons_outline:folder-open'"></mat-icon>
+                        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">There are no items!</div>
+                    </div>
+                </ng-template>
+
+            </div>
+
+        </mat-drawer-content>
+
+    </mat-drawer-container>
+
+</div>

@@ -1,0 +1,176 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="bg-card">
+        <div class="flex flex-col w-full max-w-screen-xl mx-auto px-6 sm:px-8">
+            <div class="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-8 sm:my-12">
+                <!-- Avatar and title -->
+                <div class="flex flex-auto items-center min-w-0">
+                    <div class="flex-0 w-16 h-16 rounded-full overflow-hidden bg-primary-100">
+                        <mat-icon class="w-full h-full flex items-center justify-center text-primary-600" [svgIcon]="'heroicons_solid:user-group'"></mat-icon>
+                    </div>
+                    <div class="flex flex-col min-w-0 ml-4">
+                        <div class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">
+                            Edit User Role
+                        </div>
+                        <div class="text-secondary">Update user permissions and access level</div>
+                    </div>
+                </div>
+                <!-- Back Button -->
+                <div class="flex items-center mt-6 sm:mt-0 sm:ml-2">
+                    <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        (click)="cancel()">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:arrow-left'"></mat-icon>
+                        <span class="ml-2">Back to Users</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto border-t -mt-px pt-4 sm:pt-6">
+        <div class="w-full max-w-3xl mx-auto px-6 sm:px-8">
+
+            <!-- Loading State -->
+            <div *ngIf="isLoading" class="flex items-center justify-center py-12">
+                <mat-icon class="animate-spin mr-3" [svgIcon]="'heroicons_solid:arrow-path'"></mat-icon>
+                <span>Loading user details...</span>
+            </div>
+
+            <!-- Edit Role Form -->
+            <div *ngIf="!isLoading && user" class="bg-card shadow rounded-2xl overflow-hidden">
+
+                <!-- User Info Header -->
+                <div class="bg-primary-50 px-6 py-4 border-b">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200 mr-4">
+                            <ng-container *ngIf="user.attributes?.avatar; else defaultAvatar">
+                                <img
+                                    class="w-full h-full object-cover"
+                                    [src]="'assets/images/avatars/' + user.attributes.avatar[0]"
+                                    [alt]="user.firstName + ' ' + user.lastName">
+                            </ng-container>
+                            <ng-template #defaultAvatar>
+                                <div class="w-full h-full flex items-center justify-center bg-primary-100">
+                                    <mat-icon class="text-primary-600" [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                                </div>
+                            </ng-template>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">{{user.firstName}} {{user.lastName}}</h3>
+                            <p class="text-sm text-gray-500">{{user.email}}</p>
+                            <p class="text-xs text-gray-400">{{user.username}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Content -->
+                <div class="p-6">
+                    <form (ngSubmit)="updateRole()" #roleForm="ngForm">
+
+                        <!-- Current Role Info -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Current Role</label>
+                            <div class="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                                <span class="font-medium">{{selectedRole || 'No role assigned'}}</span>
+                            </div>
+                        </div>
+
+                        <!-- Role Selection -->
+                        <div class="mb-6">
+                            <mat-form-field class="w-full" appearance="outline">
+                                <mat-label>Select New Role</mat-label>
+                                <mat-select [(value)]="selectedRole" name="role" required>
+                                    <mat-option *ngFor="let role of availableRoles" [value]="role.value">
+                                        <div class="flex items-center">
+                                            <mat-icon class="mr-2 text-sm"
+                                                      [ngClass]="{
+                                                        'text-blue-600': role.value === 'bank_agent',
+                                                        'text-green-600': role.value === 'bank_officer',
+                                                        'text-purple-600': role.value === 'cnss_officer'
+                                                      }"
+                                                      [svgIcon]="'heroicons_solid:user-group'"></mat-icon>
+                                            <span>{{role.label}}</span>
+                                        </div>
+                                    </mat-option>
+                                </mat-select>
+                                <mat-hint>Choose the appropriate role for this user</mat-hint>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Role Descriptions -->
+                        <div class="mb-8">
+                            <h4 class="text-sm font-medium text-gray-700 mb-3">Role Descriptions</h4>
+                            <div class="space-y-3">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <div class="flex items-center mb-1">
+                                        <mat-icon class="text-blue-600 mr-2 text-sm" [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                                        <span class="font-medium text-blue-900">Bank Agent</span>
+                                    </div>
+                                    <p class="text-xs text-blue-700">Basic banking operations and customer service</p>
+                                </div>
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                                    <div class="flex items-center mb-1">
+                                        <mat-icon class="text-green-600 mr-2 text-sm" [svgIcon]="'heroicons_solid:shield-check'"></mat-icon>
+                                        <span class="font-medium text-green-900">Bank Officer</span>
+                                    </div>
+                                    <p class="text-xs text-green-700">Advanced banking operations and approvals</p>
+                                </div>
+                                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                                    <div class="flex items-center mb-1">
+                                        <mat-icon class="text-purple-600 mr-2 text-sm" [svgIcon]="'heroicons_solid:building-office'"></mat-icon>
+                                        <span class="font-medium text-purple-900">CNSS Officer</span>
+                                    </div>
+                                    <p class="text-xs text-purple-700">CNSS system management and operations</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex justify-end space-x-3">
+                            <button
+                                type="button"
+                                mat-stroked-button
+                                (click)="cancel()"
+                                [disabled]="isLoading">
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                mat-flat-button
+                                [color]="'primary'"
+                                [disabled]="isLoading || !selectedRole">
+                                <mat-icon *ngIf="isLoading" class="animate-spin mr-2" [svgIcon]="'heroicons_solid:arrow-path'"></mat-icon>
+                                <mat-icon *ngIf="!isLoading" class="mr-2" [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                {{isLoading ? 'Updating...' : 'Update Role'}}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div *ngIf="!isLoading && !user" class="flex flex-col items-center justify-center py-12">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden bg-red-100 flex items-center justify-center mb-4">
+                    <mat-icon class="text-red-400 text-5xl" [svgIcon]="'heroicons_solid:exclamation-triangle'"></mat-icon>
+                </div>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">User not found</h3>
+                <p class="text-gray-500 text-center max-w-md mb-4">
+                    The requested user could not be found or you don't have permission to edit their role.
+                </p>
+                <button
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="cancel()">
+                    <mat-icon class="mr-2" [svgIcon]="'heroicons_solid:arrow-left'"></mat-icon>
+                    Back to Users
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

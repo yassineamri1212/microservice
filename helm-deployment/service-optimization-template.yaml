@@ -1,0 +1,66 @@
+# Universal Service Optimization Template
+# Apply this template to optimize any microservice for minikube
+
+# Copy this content to your service's values.yaml and adjust the service-specific values
+
+# Standard optimized configuration for minikube microservices
+replicaCount: 1
+
+image:
+  repository: theoldisback/SERVICE_NAME  # Replace with actual service name
+  tag: stb
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8089  # Adjust port as needed
+
+# Optimized resource configuration for minikube
+resources:
+  limits:
+    cpu: 400m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 256Mi
+
+# JVM optimization (adjust heap size based on service requirements)
+jvm:
+  heapSize: "256m"
+  options: "-Xms128m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+
+# Auto-restart configuration
+restartPolicy: Always
+
+# Health probes (adjust paths as needed)
+livenessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8089  # Match your service port
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  timeoutSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8089  # Match your service port
+  initialDelaySeconds: 60
+  periodSeconds: 15
+  timeoutSeconds: 5
+
+# Environment variables for optimization
+env:
+  SPRING_PROFILES_ACTIVE: "minikube"
+  EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/"
+  SERVER_TOMCAT_MAX_THREADS: "40"
+  SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "5"
+  LOGGING_LEVEL_ROOT: "WARN"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info"
+
+# Service-specific configurations (add as needed)
+# Examples:
+# KEYCLOAK_AUTH_SERVER_URL: "http://keycloak.default.svc.cluster.local:8086"
+# SPRING_RABBITMQ_HOST: "rabbitmq.default.svc.cluster.local"
+# SPRING_MAIL_HOST: "your-smtp-host"

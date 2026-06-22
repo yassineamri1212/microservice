@@ -1,0 +1,1362 @@
+/* Enhanced Meeting Calendar Component Styles - Blue (#0877c6) & White Theme */
+
+// Color Variables
+$primary-blue: #0877c6;
+$primary-blue-light: #1a85d1;
+$primary-blue-dark: #065a9f;
+$white: #ffffff;
+$light-gray: #f8f9fa;
+$medium-gray: #e9ecef;
+$dark-gray: #6c757d;
+$text-dark: #212529;
+$text-light: #6c757d;
+$success: #28a745;
+$warning: #ffc107;
+$danger: #dc3545;
+$info: #17a2b8;
+
+// Shadows
+$shadow-sm: 0 2px 4px rgba(8, 119, 198, 0.1);
+$shadow-md: 0 4px 12px rgba(8, 119, 198, 0.15);
+$shadow-lg: 0 8px 24px rgba(8, 119, 198, 0.2);
+
+.meeting-calendar-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: $light-gray;
+    min-height: 100vh;
+}
+
+/* Enhanced Header Section */
+.header-section {
+    margin-bottom: 32px;
+}
+
+.page-header {
+    background: $white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+    text-align: center;
+}
+
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-title {
+    color: $primary-blue;
+    margin: 0 0 12px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.page-subtitle {
+    color: $text-light;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* Enhanced Main Content with Side-by-Side Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* Enhanced Modern Cards */
+.modern-card {
+    background: $white;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+    border: 1px solid $medium-gray;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: $shadow-md;
+        border-color: $primary-blue;
+    }
+}
+
+.card-header {
+    background: rgba($primary-blue, 0.05);
+    padding: 20px 24px;
+    border-bottom: 1px solid $medium-gray;
+
+    h2, h3 {
+        color: $primary-blue;
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: $text-light;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: rgba($primary-blue, 0.1);
+            color: $primary-blue;
+        }
+    }
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.card-footer {
+    background: rgba($primary-blue, 0.02);
+    padding: 20px 24px;
+    border-top: 1px solid $medium-gray;
+}
+
+/* Icon definitions */
+.icon-calendar::before { content: "📅"; }
+.icon-calendar-days::before { content: "🗓️"; }
+.icon-plus::before { content: "➕"; }
+.icon-meetings::before { content: "🎥"; }
+.icon-count::before { content: "📊"; }
+.icon-loading::before { content: "⏳"; }
+.icon-error::before { content: "❌"; }
+.icon-refresh::before { content: "🔄"; }
+.icon-clock::before { content: "⏰"; }
+.icon-history::before { content: "📜"; }
+.icon-upcoming::before { content: "🔜"; }
+.icon-video::before { content: "🎥"; }
+.icon-info::before { content: "ℹ️"; }
+.icon-time::before { content: "🕐"; }
+.icon-organizer::before { content: "👤"; }
+.icon-room::before { content: "🏠"; }
+.icon-duration::before { content: "⏱️"; }
+.icon-users::before { content: "👥"; }
+.icon-globe::before { content: "🌐"; }
+.icon-lock::before { content: "🔒"; }
+.icon-join::before { content: "▶️"; }
+.icon-link::before { content: "🔗"; }
+.icon-delete::before { content: "🗑️"; }
+.icon-crown::before { content: "👑"; }
+.icon-no-meetings::before { content: "📅"; }
+.icon-calendar-select::before { content: "📆"; }
+.icon-video-feature::before { content: "📹"; }
+.icon-users-feature::before { content: "👥"; }
+.icon-schedule-feature::before { content: "📋"; }
+.icon-schedule::before { content: "📝"; }
+.icon-close::before { content: "✖️"; }
+.icon-warning::before { content: "⚠️"; }
+.icon-topic::before { content: "🏷️"; }
+.icon-description::before { content: "📄"; }
+.icon-class::before { content: "🎓"; }
+.icon-visibility::before { content: "👁️"; }
+.icon-participants::before { content: "👥"; }
+.icon-user-organizer::before { content: "👨‍💼"; }
+.icon-check::before { content: "✅"; }
+.icon-role::before { content: "🏷️"; }
+.icon-star::before { content: "⭐"; }
+.icon-remove::before { content: "❌"; }
+.icon-spinner::before { content: "⏳"; }
+
+/* Calendar Section */
+.calendar-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.modern-calendar {
+    margin-bottom: 24px;
+
+    .calendar-widget {
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+
+        // Override flatpickr styles for modern look
+        :global(.flatpickr-calendar) {
+            background: $white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: none;
+            font-family: inherit;
+
+            .flatpickr-months {
+                background: $primary-blue;
+
+                .flatpickr-month {
+                    color: $white;
+                }
+
+                .flatpickr-prev-month,
+                .flatpickr-next-month {
+                    color: $white;
+
+                    &:hover {
+                        color: rgba($white, 0.8);
+                    }
+                }
+            }
+
+            .flatpickr-weekdays {
+                background: rgba($primary-blue, 0.1);
+
+                .flatpickr-weekday {
+                    color: $primary-blue;
+                    font-weight: 600;
+                }
+            }
+
+            .flatpickr-days {
+                .flatpickr-day {
+                    color: $text-dark;
+
+                    &:hover {
+                        background: rgba($primary-blue, 0.1);
+                        color: $primary-blue;
+                    }
+
+                    &.selected {
+                        background: $primary-blue;
+                        color: $white;
+                    }
+
+                    &.today {
+                        border-color: $primary-blue;
+                        color: $primary-blue;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.calendar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.selected-date-info {
+    text-align: center;
+    padding: 16px;
+    background: rgba($primary-blue, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba($primary-blue, 0.2);
+}
+
+.date-display {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .date-day {
+        font-size: 0.875rem;
+        color: $text-light;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .date-full {
+        font-size: 1.1rem;
+        color: $text-dark;
+        font-weight: 600;
+    }
+}
+
+/* Meetings Section */
+.meetings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.meetings-header {
+    .header-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        h3 {
+            margin: 0;
+        }
+
+        .meeting-stats {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .meeting-count {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba($primary-blue, 0.1);
+                color: $primary-blue;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.875rem;
+                font-weight: 600;
+            }
+
+            .date-badge {
+                background: $primary-blue;
+                color: $white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
+    }
+}
+
+/* Enhanced Action Buttons */
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: $shadow-sm;
+    text-decoration: none;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: $shadow-md;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        transform: none;
+        box-shadow: $shadow-sm;
+    }
+
+    &.primary {
+        background: $primary-blue;
+        color: $white;
+
+        &:hover:not(:disabled) {
+            background: $primary-blue-light;
+        }
+
+        &.pulse {
+            animation: pulse-primary 1.5s infinite;
+        }
+    }
+
+    &.secondary {
+        background: $white;
+        color: $primary-blue;
+        border: 2px solid $primary-blue;
+
+        &:hover:not(:disabled) {
+            background: $primary-blue;
+            color: $white;
+        }
+    }
+
+    &.danger {
+        background: $white;
+        color: $danger;
+        border: 2px solid $danger;
+
+        &:hover:not(:disabled) {
+            background: $danger;
+            color: $white;
+        }
+    }
+}
+
+.schedule-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Enhanced State Components */
+.enhanced-state {
+    .state-content {
+        text-align: center;
+        padding: 40px 20px;
+
+        .state-title {
+            color: $text-dark;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 16px 0 8px 0;
+        }
+
+        .state-description {
+            color: $text-light;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+    }
+
+    &.loading-state {
+        .loading-spinner-modern {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 24px;
+
+            .spinner-ring {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 4px solid $medium-gray;
+                border-top: 4px solid $primary-blue;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            .spinner-icon {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 1.5rem;
+                color: $primary-blue;
+            }
+        }
+    }
+
+    &.error-state {
+        .error-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 24px;
+            background: $danger;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $white;
+            font-size: 1.5rem;
+        }
+    }
+}
+
+/* Meetings List */
+.meetings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.meeting-card {
+    position: relative;
+
+    &.starting-soon {
+        border-left: 4px solid $warning;
+        background: rgba($warning, 0.02);
+    }
+
+    &.past-meeting {
+        opacity: 0.7;
+        background: rgba($medium-gray, 0.1);
+    }
+
+    .meeting-status-badge {
+        position: absolute;
+        top: -8px;
+        right: 20px;
+        z-index: 10;
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: $shadow-sm;
+
+            &.starting-soon {
+                background: $warning;
+                color: $white;
+            }
+
+            &.upcoming {
+                background: $info;
+                color: $white;
+            }
+
+            &.past {
+                background: $dark-gray;
+                color: $white;
+            }
+        }
+    }
+
+    .meeting-header-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid $medium-gray;
+
+        .meeting-title-section {
+            flex: 1;
+
+            .meeting-topic {
+                color: $text-dark;
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin: 0 0 8px 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .meeting-number {
+                color: $text-light;
+                font-size: 0.875rem;
+                margin: 0 0 12px 0;
+            }
+
+            .meeting-badges {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .meeting-role-badge {
+                background: $primary-blue;
+                color: $white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+            }
+        }
+
+        .meeting-capacity {
+            text-align: right;
+
+            .capacity-label {
+                display: block;
+                font-size: 0.75rem;
+                color: $text-light;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 4px;
+            }
+
+            .capacity-value {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: $primary-blue;
+            }
+        }
+    }
+
+    .meeting-details {
+        margin-bottom: 20px;
+
+        .meeting-description-section {
+            margin-bottom: 20px;
+
+            .detail-label {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: $text-light;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 8px;
+            }
+
+            .meeting-description {
+                color: $text-dark;
+                line-height: 1.6;
+                margin: 0;
+                padding: 12px;
+                background: $light-gray;
+                border-radius: 6px;
+                border-left: 3px solid $primary-blue;
+            }
+        }
+
+        .meeting-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+
+            .meta-item {
+                .meta-label {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: $text-light;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 6px;
+                }
+
+                .meta-value {
+                    display: block;
+                    font-weight: 600;
+                    color: $text-dark;
+                    font-size: 0.9rem;
+
+                    &.room-id {
+                        font-family: 'Monaco', 'Menlo', monospace;
+                        background: $medium-gray;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+                        font-size: 0.8rem;
+                    }
+
+                    &.current-user-highlight {
+                        color: $primary-blue;
+
+                        .icon-crown {
+                            color: #ffd700;
+                            margin-left: 6px;
+                            animation: crown-glow 2s ease-in-out infinite alternate;
+                        }
+                    }
+                }
+            }
+        }
+
+        .participants-info {
+            .access-type {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+
+                .access-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 6px 12px;
+                    border-radius: 20px;
+                    font-size: 0.875rem;
+                    font-weight: 600;
+
+                    &.public {
+                        background: rgba($success, 0.2);
+                        color: darken($success, 10%);
+                    }
+
+                    &.private {
+                        background: rgba($danger, 0.2);
+                        color: darken($danger, 10%);
+                    }
+                }
+
+                .participants-count {
+                    color: $text-light;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+
+    .meeting-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .join-btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+}
+
+/* Empty States */
+.empty-state {
+    .empty-state-content {
+        text-align: center;
+        padding: 60px 40px;
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: $primary-blue;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $white;
+            font-size: 2rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $text-dark;
+            margin-bottom: 12px;
+        }
+
+        .empty-state-description {
+            font-size: 1rem;
+            color: $text-light;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .empty-state-action {
+            padding: 12px 24px;
+            font-size: 1rem;
+        }
+
+        .empty-state-features {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+
+            .feature-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                color: $text-light;
+
+                i {
+                    width: 40px;
+                    height: 40px;
+                    background: rgba($primary-blue, 0.1);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.2rem;
+                    color: $primary-blue;
+                }
+
+                span {
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modal-slide-in 0.3s ease-out;
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+/* Form Styles */
+.meeting-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .form-label {
+        font-weight: 600;
+        color: $text-dark;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+}
+
+.modern-input {
+    padding: 12px 16px;
+    border: 2px solid $medium-gray;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: $white;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-blue;
+        box-shadow: 0 0 0 3px rgba($primary-blue, 0.1);
+    }
+
+    &::placeholder {
+        color: $text-light;
+    }
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-hint {
+    color: $text-light;
+    font-size: 0.75rem;
+    margin-top: 4px;
+}
+
+/* Toggle Switch */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+
+        &:checked + .toggle-slider {
+            background-color: $primary-blue;
+
+            &:before {
+                transform: translateX(22px);
+            }
+        }
+    }
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $medium-gray;
+    transition: 0.3s ease;
+    border-radius: 28px;
+
+    &:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: $white;
+        transition: 0.3s ease;
+        border-radius: 50%;
+    }
+}
+
+.toggle-label {
+    font-weight: 600;
+    color: $text-dark;
+}
+
+/* Participants Section */
+.participants-section {
+    .current-user-indicator {
+        margin-bottom: 20px;
+
+        .current-user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba($primary-blue, 0.05);
+            border: 2px solid rgba($primary-blue, 0.2);
+            border-radius: 8px;
+
+            .user-avatar-auto {
+                width: 40px;
+                height: 40px;
+                background: $primary-blue;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: $white;
+                font-size: 1.2rem;
+            }
+
+            .user-info-auto {
+                flex: 1;
+
+                .user-name-auto {
+                    font-weight: 600;
+                    color: $text-dark;
+                    margin-bottom: 4px;
+                }
+
+                .user-email-auto {
+                    color: $text-light;
+                    font-size: 0.875rem;
+                    margin-bottom: 6px;
+                }
+
+                .auto-added-label {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    color: $success;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    .participants-quick-select {
+        margin-bottom: 16px;
+
+        h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: $text-dark;
+            margin-bottom: 12px;
+        }
+    }
+
+    .loading-users {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        color: $text-light;
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid $medium-gray;
+            border-top: 2px solid $primary-blue;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    }
+
+    .user-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .user-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: $light-gray;
+        border: 2px solid $medium-gray;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            border-color: rgba($primary-blue, 0.5);
+            background: rgba($primary-blue, 0.02);
+        }
+
+        &.selected {
+            background: rgba($primary-blue, 0.1);
+            border-color: $primary-blue;
+        }
+
+        .user-avatar-container {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar-initials {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+
+            .user-name {
+                font-weight: 600;
+                color: $text-dark;
+                font-size: 0.875rem;
+                margin-bottom: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .user-email {
+                color: $text-light;
+                font-size: 0.75rem;
+                margin-bottom: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .user-role {
+                font-size: 0.7rem;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+        }
+
+        .selection-indicator {
+            width: 20px;
+            height: 20px;
+            background: $primary-blue;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $white;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+    }
+
+    .participants-manual {
+        margin-top: 16px;
+    }
+
+    .selected-participants {
+        margin-top: 16px;
+        padding: 16px;
+        background: $light-gray;
+        border-radius: 8px;
+
+        h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: $text-dark;
+            margin-bottom: 12px;
+        }
+    }
+
+    .participant-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .participant-tag {
+        background: $primary-blue;
+        color: $white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &.current-user-tag {
+            background: linear-gradient(135deg, $primary-blue, $primary-blue-dark);
+            border: 2px solid #ffd700;
+            font-weight: 600;
+        }
+
+        .organizer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba($white, 0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .remove-participant {
+            background: none;
+            border: none;
+            color: $white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.7rem;
+
+            &:hover:not(:disabled) {
+                color: rgba($white, 0.7);
+            }
+
+            &:disabled {
+                color: rgba($white, 0.5);
+                cursor: not-allowed;
+            }
+        }
+    }
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: 12px;
+
+    .submit-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .cancel-btn {
+        min-width: 120px;
+        justify-content: center;
+    }
+}
+
+/* Enhanced Alert Styles */
+.modern-alert {
+    background: $white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: $shadow-sm;
+    border-left: 4px solid $danger;
+
+    .alert-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba($danger, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 14px;
+        color: $danger;
+    }
+
+    .alert-content {
+        flex: 1;
+
+        p {
+            margin: 0;
+            color: $text-dark;
+        }
+    }
+}
+
+/* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-primary {
+    0% { box-shadow: 0 4px 15px rgba($primary-blue, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba($primary-blue, 0.8); }
+    100% { box-shadow: 0 4px 15px rgba($primary-blue, 0.4); }
+}
+
+@keyframes crown-glow {
+    from { filter: drop-shadow(0 0 2px #ffd700); }
+    to { filter: drop-shadow(0 0 6px #ffd700); }
+}
+
+@keyframes modal-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .meeting-calendar-container {
+        padding: 16px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+    }
+
+    .card-header, .card-body, .card-footer {
+        padding: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .modal {
+        width: 95%;
+        margin: 16px;
+    }
+
+    .meeting-actions {
+        flex-direction: column;
+        gap: 8px;
+
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    .modal-actions {
+        flex-direction: column;
+
+        .submit-btn,
+        .cancel-btn {
+            width: 100%;
+        }
+    }
+
+    .meeting-header-card {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .meetings-header .header-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.75rem;
+    }
+
+    .card-header, .card-body, .card-footer {
+        padding: 16px;
+    }
+
+    .modern-input {
+        padding: 10px 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .meeting-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .empty-state-features {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+/* Focus States for Accessibility */
+.action-btn:focus,
+.modern-input:focus,
+.toggle-slider:focus {
+    outline: 2px solid $primary-blue;
+    outline-offset: 2px;
+}

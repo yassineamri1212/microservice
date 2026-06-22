@@ -1,0 +1,54 @@
+# Default values for the grafana chart.
+
+image:
+  repository: grafana/grafana
+  tag: "10.1.1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30000
+
+admin:
+  user: admin
+  password: admin
+
+# Environment variables for SMTP configuration
+env:
+  GF_SMTP_ENABLED: "true"
+  GF_SMTP_HOST: "smtp.gmail.com:587"
+  GF_SMTP_USER: "mohamedabdelkebir15@gmail.com"
+  GF_SMTP_PASSWORD: "xldh nyqz sddb vehr"
+  GF_SMTP_FROM_ADDRESS: "mohamedabdelkebir15@gmail.com"
+  GF_SMTP_FROM_NAME: "Grafana Monitoring Alerts"
+  GF_SMTP_EHLO_IDENTITY: "localhost"
+  GF_SMTP_STARTTLS_POLICY: "MandatoryStartTLS"
+  GF_SMTP_SKIP_VERIFY: "false"
+
+# Persistent storage configuration
+storage:
+  enabled: true
+  size: 10Gi
+  # storageClass: "" # Use default storage class
+
+# This section automatically provisions the Loki and Prometheus data sources in Grafana.
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Loki
+      type: loki
+      url: http://loki:3100
+      access: proxy
+      isDefault: true
+      jsonData:
+        manageAlerts: true
+        alertmanagerUid: ""
+      editable: true
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus.monitoring:9090
+      access: proxy
+      isDefault: false
+      editable: true

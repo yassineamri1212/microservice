@@ -1,0 +1,120 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header Background -->
+    <div class="profile-header-bg">
+        <div class="profile-header-content">
+
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-avatar-section">
+                    <div class="avatar-container">
+                        <img [src]="'assets/images/avatars/' + (user.avatar || 'default.jpg')"
+                             [alt]="user.name + ' profile picture'"
+                             class="profile-avatar">
+                        <div class="avatar-edit-button">
+                            <button class="edit-avatar-btn" title="Change Avatar">
+                                <mat-icon>camera_alt</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="profile-status">
+                        <span class="status-indicator active"></span>
+                        <span class="status-text">Active</span>
+                    </div>
+                </div>
+
+                <div class="profile-info-section">
+                    <div class="profile-header-info">
+                        <h1 class="profile-name">{{user.name || 'User Name'}}</h1>
+                        <p class="profile-email">{{user.email || 'user@example.com'}}</p>
+                        <div class="profile-badges">
+                            <span class="badge verified">Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="btn btn-primary" (click)="editProfile()">
+                            <mat-icon>edit</mat-icon>
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="profile-main-content">
+        <div class="content-container">
+
+            <!-- Stats Cards -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <mat-icon>security</mat-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Security</h3>
+                        <p>{{user.status}}</p>
+                    </div>
+                    <div class="stat-value">
+                        <mat-icon class="security-icon">verified_user</mat-icon>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <mat-icon>notifications</mat-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Notifications</h3>
+                        <p>Enabled</p>
+                    </div>
+                    <div class="stat-value">
+                        <mat-icon class="notification-icon">notifications_active</mat-icon>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information Sections -->
+            <div class="info-sections">
+
+                <!-- Personal Information -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <div class="header-title">
+                            <mat-icon>person</mat-icon>
+                            <h2>Personal Information</h2>
+                        </div>
+                        <button class="btn btn-link">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Full Name</label>
+                                <span>{{user.name || 'Not provided'}}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email Address</label>
+                                <span>{{user.email || 'Not provided'}}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Phone Number</label>
+                                <span>{{user.phoneNumber || 'Not provided'}}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Address</label>
+                                <span>{{user.address || 'Not provided'}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+
+            </div>
+        </div>
+    </div>
+</div>

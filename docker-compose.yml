@@ -1,0 +1,126 @@
+version: "3.8"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # RabbitMQ messaging
+      - "15672:15672"   # RabbitMQ management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbituser
+      RABBITMQ_DEFAULT_PASS: rabbitpass
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0.1
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    ports:
+      - "8080:8080"
+
+  postgresdb:
+    image: postgres
+    container_name: postgresdb
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      POSTGRES_USER: $POSTGRESDB_USER
+      POSTGRES_PASSWORD: $POSTGRESDB_ROOT_PASSWORD
+      POSTGRES_DB: $POSTGRESDB_DATABASE
+    ports:
+      - "$POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT"
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgresdb
+
+
+  eureka-server:
+    build:
+      context: ./eureka-server-service
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build:
+      context: ./api-gateway-service
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    depends_on:
+      - eureka-server
+    ports:
+      - "8084:8080"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    depends_on:
+      - eureka-server
+      - postgresdb
+      - rabbitmq
+    ports:
+      - "8087:8087"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: rabbituser
+      SPRING_RABBITMQ_PASSWORD: rabbitpass
+
+  service-chat:
+    build:
+      context: ./service-chat
+      dockerfile: Dockerfile
+    container_name: service-chat
+    depends_on:
+      - eureka-server
+      - postgresdb
+    ports:
+      - "8088:8088"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/chat_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+
+  service-meet:
+    build:
+      context: ./service-meet
+      dockerfile: Dockerfile
+    container_name: service-meet
+    depends_on:
+      - eureka-server
+      - postgresdb
+    ports:
+      - "8085:8085"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/meetings_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+
+volumes:
+  db:

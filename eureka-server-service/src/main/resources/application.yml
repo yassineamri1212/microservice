@@ -1,0 +1,18 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: eureka-server
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+eureka:
+  client:
+    register-with-eureka: false    # Eureka server should not register itself
+    fetch-registry: false           # Don't fetch registry from itself
+  server:
+    enable-self-preservation: false # Optional, helps in dev to see real-time changes
+    eviction-interval-timer-in-ms: 5000 # Optional, faster eviction during testing
+    wait-time-in-ms-when-sync-empty: 0  # Optional

@@ -1,0 +1,12 @@
+replicaCount: 1
+
+image:
+  repository: theoldisback/meet-service
+  tag: localcluster
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8085
+
+resources: {}

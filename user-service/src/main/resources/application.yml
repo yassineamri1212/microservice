@@ -1,0 +1,53 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: user-service
+  
+  # Mail Configuration for Gmail SMTP (STARTTLS on port 587 - matching working local config)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SPRING_MAIL_USERNAME:mohamedabdelkebir15@gmail.com}
+    password: ${SPRING_MAIL_PASSWORD:xldh nyqz sddb vehr}
+    default-encoding: UTF-8
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+          connectiontimeout: 10000
+          timeout: 10000
+          writetimeout: 10000
+
+# Keycloak configuration for internal cluster communication
+keycloak:
+  auth-server-url: http://keycloak.default.svc.cluster.local:8086
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false  # Temporarily disable mail health check

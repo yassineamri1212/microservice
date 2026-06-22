@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  postgresdb:
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      POSTGRES_USER: ${POSTGRESDB_USER}
+      POSTGRES_PASSWORD: ${POSTGRESDB_ROOT_PASSWORD}
+      POSTGRES_DB: ${POSTGRESDB_DATABASE}
+    ports:
+      - "${POSTGRESDB_LOCAL_PORT}:${POSTGRESDB_DOCKER_PORT}"
+    volumes:
+      - db:/var/lib/postgres
+
+  app:
+    build: .
+    depends_on:
+      - postgresdb
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - "${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}"
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.datasource.url": "jdbc:postgresql://postgresdb:${POSTGRESDB_DOCKER_PORT}/${POSTGRESDB_DATABASE}",
+        "spring.datasource.username": "${POSTGRESDB_USER}",
+        "spring.datasource.password": "${POSTGRESDB_ROOT_PASSWORD}",
+        "spring.jpa.properties.hibernate.dialect": "org.hibernate.dialect.PostgreSQLDialect",
+        "spring.jpa.hibernate.ddl-auto": "update",
+        "eureka.instance.preferIpAddress": "true",
+        "eureka.instance.hostname": "eureka-0",
+        "eureka.client.registerWithEureka": "true",
+        "eureka.client.fetchRegistry": "true",
+        "eureka.client.serviceUrl.defaultZone": "http://eureka-0.eureka.default.svc.cluster.local:8761/eureka"
+      }'
+    volumes:
+      - .m2:/root/.m2
+      - .:/workdir/server/src
+      - ./src/main/resources/application.yml:/workdir/server/src/main/resources/application.yml
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:

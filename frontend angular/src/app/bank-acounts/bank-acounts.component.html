@@ -1,0 +1,251 @@
+<div class="bank-accounts-container">
+    <!-- Header Section with Enhanced Design -->
+    <div class="header-section">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <i class="icon-bank"></i>
+                    Bank Accounts Management
+                </h1>
+                <p class="page-subtitle">Manage and monitor your financial accounts</p>
+            </div>
+            <div class="header-actions">
+                <button class="refresh-btn modern-btn" (click)="refreshAccounts()" [disabled]="loading">
+                    <i class="icon-refresh" [class.spinning]="loading"></i>
+                    <span *ngIf="!loading">Refresh</span>
+                    <span *ngIf="loading">Loading...</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Enhanced Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card total-accounts">
+                <div class="card-icon">
+                    <i class="icon-accounts"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total Accounts</h3>
+                    <p class="count">{{ getAccountsCount() }}</p>
+                    <span class="card-label">All accounts</span>
+                </div>
+            </div>
+
+            <div class="summary-card active-accounts">
+                <div class="card-icon">
+                    <i class="icon-active"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Active Accounts</h3>
+                    <p class="count active">{{ getActiveAccountsCount() }}</p>
+                    <span class="card-label">Currently active</span>
+                </div>
+            </div>
+
+            <div class="summary-card cnss-balance">
+                <div class="card-icon">
+                    <i class="icon-treasury"></i>
+                </div>
+                <div class="card-content">
+                    <h3>CNSS Balance</h3>
+                    <p class="balance">{{ cnssBalance | currency:'TND':'symbol':'1.2-2' }}</p>
+                    <span class="card-label">Treasury funds</span>
+                </div>
+            </div>
+
+            <div class="summary-card total-balance">
+                <div class="card-icon">
+                    <i class="icon-balance"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total Balance</h3>
+                    <p class="balance total">{{ getTotalBalance() | currency:'TND':'symbol':'1.2-2' }}</p>
+                    <span class="card-label">Combined balance</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Message with Enhanced Design -->
+    <div *ngIf="error" class="error-message modern-alert">
+        <div class="alert-icon">
+            <i class="icon-error"></i>
+        </div>
+        <div class="alert-content">
+            <h4>Error Loading Data</h4>
+            <p>{{ error }}</p>
+            <button class="retry-btn" (click)="refreshAccounts()">
+                <i class="icon-retry"></i>
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State with Modern Spinner -->
+    <div *ngIf="loading && !error" class="loading-container">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading bank accounts...</p>
+        </div>
+    </div>
+
+    <!-- Enhanced Bank Accounts Table -->
+    <div *ngIf="!loading && !error && bankAccounts.length > 0" class="accounts-section">
+        <div class="section-header">
+            <h2>All Accounts</h2>
+            <div class="accounts-count">{{ bankAccounts.length }} accounts found</div>
+        </div>
+
+        <div class="accounts-table-container">
+            <div class="table-wrapper">
+                <table class="accounts-table">
+                    <thead>
+                    <tr>
+                        <th class="col-id">ID</th>
+                        <th class="col-account">Account Details</th>
+                        <th class="col-type">Type</th>
+                        <th class="col-balance">Balance</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-dates">Last Updated</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let account of bankAccounts; trackBy: trackByAccountId"
+                        class="account-row"
+                        [class.active-account]="account.status === 'ACTIVE'"
+                        [class.inactive-account]="account.status === 'INACTIVE'">
+
+                        <td class="col-id">
+                            <span class="account-id">#{{ account.id }}</span>
+                        </td>
+
+                        <td class="col-account">
+                            <div class="account-details">
+                                <div class="account-name">{{ account.accountName }}</div>
+                                <div class="account-number">{{ account.accountNumber }}</div>
+                            </div>
+                        </td>
+
+                        <td class="col-type">
+                <span class="account-type-badge" [class]="'type-' + account.accountType.toLowerCase()">
+                  <i class="type-icon"></i>
+                    {{ account.accountType }}
+                </span>
+                        </td>
+
+                        <td class="col-balance">
+                            <div class="balance-display">
+                                <span class="balance-amount">{{ account.balance | currency:'TND':'symbol':'1.2-2' }}</span>
+                            </div>
+                        </td>
+
+                        <td class="col-status">
+                <span class="status-badge" [class]="'status-' + account.status.toLowerCase()">
+                  <i class="status-icon"></i>
+                    {{ account.status }}
+                </span>
+                        </td>
+
+                        <td class="col-dates">
+                            <div class="date-info">
+                                <div class="updated-date">{{ account.updatedAt | date:'MMM d, y' }}</div>
+                                <div class="updated-time">{{ account.updatedAt | date:'HH:mm' }}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Data State with Enhanced Design -->
+    <div *ngIf="!loading && !error && bankAccounts.length === 0" class="no-data-container">
+        <div class="no-data-content">
+            <div class="no-data-icon">
+                <i class="icon-empty"></i>
+            </div>
+            <h3>No Bank Accounts Found</h3>
+            <p>There are currently no bank accounts in the system.</p>
+            <button class="reload-btn modern-btn" (click)="refreshAccounts()">
+                <i class="icon-reload"></i>
+                Reload Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Enhanced Filter Sections -->
+    <div *ngIf="!loading && !error && bankAccounts.length > 0" class="filter-sections">
+
+        <!-- Active Accounts Section -->
+        <div class="filter-section" *ngIf="getActiveAccounts().length > 0">
+            <div class="section-header">
+                <h3>
+                    <i class="icon-active-section"></i>
+                    Active Accounts
+                </h3>
+                <span class="section-count">{{ getActiveAccounts().length }} accounts</span>
+            </div>
+
+            <div class="accounts-grid">
+                <div *ngFor="let account of getActiveAccounts()" class="account-card active-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="icon-account-active"></i>
+                        </div>
+                        <div class="card-status">
+                            <span class="status-indicator active"></span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">{{ account.accountName }}</h4>
+                        <p class="card-number">{{ account.accountNumber }}</p>
+                        <div class="card-meta">
+                            <span class="account-type">{{ account.accountType }}</span>
+                        </div>
+                        <div class="card-balance">
+                            <span class="balance-label">Balance</span>
+                            <span class="balance-value">{{ account.balance | currency:'TND':'symbol':'1.2-2' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CNSS Accounts Section -->
+        <div class="filter-section" *ngIf="getCnssAccounts().length > 0">
+            <div class="section-header">
+                <h3>
+                    <i class="icon-cnss-section"></i>
+                    CNSS Treasury Accounts
+                </h3>
+                <span class="section-count">{{ getCnssAccounts().length }} accounts</span>
+            </div>
+
+            <div class="accounts-grid">
+                <div *ngFor="let account of getCnssAccounts()" class="account-card cnss-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="icon-treasury-card"></i>
+                        </div>
+                        <div class="card-status">
+                            <span class="status-indicator" [class]="account.status.toLowerCase()"></span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">{{ account.accountName }}</h4>
+                        <p class="card-number">{{ account.accountNumber }}</p>
+                        <div class="card-meta">
+                            <span class="account-status">{{ account.status }}</span>
+                        </div>
+                        <div class="card-balance">
+                            <span class="balance-label">Balance</span>
+                            <span class="balance-value">{{ account.balance | currency:'TND':'symbol':'1.2-2' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

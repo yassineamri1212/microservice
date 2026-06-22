@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: quay.io/keycloak/keycloak
+  tag: "24.0.1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 8086
+  nodePort: 30080
+
+env:
+  KEYCLOAK_ADMIN: admin
+  KEYCLOAK_ADMIN_PASSWORD: admin
+  JAVA_OPTS_APPEND: "-Xms512m -Xmx1536m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m"
+
+# Dev mode startup
+command:
+  - "/opt/keycloak/bin/kc.sh"
+  - "start-dev"
+  - "--features=scripts,preview"
+
+resources:
+  limits:
+    memory: "2Gi"
+    cpu: "1000m"
+  requests:
+    memory: "1Gi"
+    cpu: "500m"
+
+# Persistence
+persistence:
+  enabled: true
+  storageClass: "keycloak-persistent"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  mountPath: /opt/keycloak/data
+
+# Realm Import
+realmImport:
+  enabled: false

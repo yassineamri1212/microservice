@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    version: {{ .Values.image.tag }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        version: {{ .Values.image.tag }}
+    spec:
+      imagePullSecrets:
+        - name: regcred   # 👈 added here
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+              value: "http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/"
+            - name: KEYCLOAK_AUTH_SERVER_URL
+              value: "http://keycloak.default.svc.cluster.local:8086"
+            - name: JAVA_OPTS
+              value: "{{ .Values.jvm.options }}"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "{{ .Values.env.SPRING_PROFILES_ACTIVE }}"
+            - name: SERVER_TOMCAT_MAX_THREADS
+              value: "{{ .Values.env.SERVER_TOMCAT_MAX_THREADS }}"
+            - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+              value: "{{ .Values.env.SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE }}"
+            - name: LOGGING_LEVEL_ROOT
+              value: "{{ .Values.env.LOGGING_LEVEL_ROOT }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- end }}

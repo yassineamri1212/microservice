@@ -1,0 +1,408 @@
+<div class="cnss-request-container">
+    <!-- Enhanced Header Section -->
+    <div class="header-section">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <i class="icon-cnss"></i>
+                    CNSS Payment Request
+                </h1>
+                <p class="page-subtitle">Submit a payment request to the CNSS Social Security System</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Main Content with Side-by-Side Layout -->
+    <div class="main-content">
+
+        <!-- Left Column: Request Form -->
+        <div class="form-section">
+            <div class="form-container modern-card">
+                <div class="card-header">
+                    <h2>
+                        <i class="icon-form"></i>
+                        Payment Request Form
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                    <form (ngSubmit)="submitRequest()" #paymentForm="ngForm">
+
+                        <!-- Enhanced Form Fields -->
+                        <div class="form-grid">
+                            <!-- CIN Field -->
+                            <div class="form-group">
+                                <label for="cin">
+                                    <i class="icon-id"></i>
+                                    CIN (National Identity Number) *
+                                </label>
+                                <input
+                                    type="text"
+                                    id="cin"
+                                    name="cin"
+                                    [(ngModel)]="cin"
+                                    (input)="onCinChange()"
+                                    placeholder="Enter your 8-digit CIN"
+                                    maxlength="8"
+                                    required
+                                    class="form-input modern-input"
+                                    [class.error]="hasCinError()"
+                                >
+                                <small class="field-help">Enter your 8-digit National Identity Number</small>
+                            </div>
+
+                            <!-- Amount Field -->
+                            <div class="form-group">
+                                <label for="amount">
+                                    <i class="icon-amount"></i>
+                                    Amount (TND) *
+                                </label>
+                                <input
+                                    type="number"
+                                    id="amount"
+                                    name="amount"
+                                    [(ngModel)]="amount"
+                                    (input)="onAmountChange()"
+                                    min="1"
+                                    max="10000"
+                                    step="0.01"
+                                    placeholder="Enter amount in TND"
+                                    required
+                                    class="form-input modern-input"
+                                    [class.error]="hasAmountError()"
+                                >
+                                <small class="field-help">Maximum amount: 10,000 TND</small>
+                            </div>
+
+                            <!-- Reason Field -->
+                            <div class="form-group full-width">
+                                <label for="reason">
+                                    <i class="icon-reason"></i>
+                                    Reason *
+                                </label>
+                                <select
+                                    id="reason"
+                                    name="reason"
+                                    [(ngModel)]="reason"
+                                    required
+                                    class="form-input modern-select"
+                                    [class.error]="hasReasonError()"
+                                >
+                                    <option value="CNSS Social Security Payment">CNSS Social Security Payment</option>
+                                    <option value="Pension Payment">Pension Payment</option>
+                                    <option value="Medical Insurance">Medical Insurance</option>
+                                    <option value="Family Allowance">Family Allowance</option>
+                                    <option value="Unemployment Benefit">Unemployment Benefit</option>
+                                    <option value="Other CNSS Service">Other CNSS Service</option>
+                                </select>
+                                <small class="field-help">Select the reason for your payment request</small>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-group">
+                                <label for="email">
+                                    <i class="icon-email"></i>
+                                    Email Address *
+                                </label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    [(ngModel)]="email"
+                                    (input)="onEmailChange()"
+                                    placeholder="Enter your email address"
+                                    required
+                                    class="form-input modern-input"
+                                    [class.error]="hasEmailError()"
+                                >
+                                <small class="field-help">Enter a valid email address for notifications</small>
+                            </div>
+
+                            <!-- Phone Number Field -->
+                            <div class="form-group">
+                                <label for="phoneNumber">
+                                    <i class="icon-phone"></i>
+                                    Phone Number *
+                                </label>
+                                <input
+                                    type="tel"
+                                    id="phoneNumber"
+                                    name="phoneNumber"
+                                    [(ngModel)]="phoneNumber"
+                                    (input)="onPhoneChange()"
+                                    placeholder="Enter your phone number (e.g., 98110161)"
+                                    maxlength="8"
+                                    pattern="[24579]\\d{7}"
+                                    required
+                                    class="form-input modern-input"
+                                    [class.error]="hasPhoneError()"
+                                >
+                                <small class="field-help">Enter your 8-digit Tunisian mobile number for SMS notifications</small>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Fee Calculation -->
+                        <div class="fee-section modern-card-inner" *ngIf="amount > 0">
+                            <div class="fee-header">
+                                <h3>
+                                    <i class="icon-calculator"></i>
+                                    Payment Summary
+                                </h3>
+                            </div>
+                            <div class="fee-breakdown">
+                                <div class="fee-row">
+                  <span class="fee-label">
+                    <i class="icon-base"></i>
+                    Base Amount:
+                  </span>
+                                    <span class="fee-amount">{{ formatAmount(amount) }}</span>
+                                </div>
+                                <div class="fee-row">
+                  <span class="fee-label">
+                    <i class="icon-fee"></i>
+                    Processing Fee:
+                  </span>
+                                    <span class="fee-amount">{{ formatAmount(processingFee) }}</span>
+                                </div>
+                                <div class="fee-row total">
+                  <span class="fee-label">
+                    <i class="icon-total"></i>
+                    <strong>Total Amount:</strong>
+                  </span>
+                                    <span class="fee-amount total-amount">
+                    <strong>{{ formatAmount(totalAmount) }}</strong>
+                  </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Validation Errors -->
+                        <div class="error-section modern-alert" *ngIf="validationErrors.length > 0">
+                            <div class="alert-icon">
+                                <i class="icon-warning"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h4>Please correct the following errors:</h4>
+                                <ul>
+                                    <li *ngFor="let error of validationErrors">{{ error }}</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Error Message -->
+                        <div class="error-message modern-alert" *ngIf="error">
+                            <div class="alert-icon">
+                                <i class="icon-error"></i>
+                            </div>
+                            <div class="alert-content">
+                                <p>{{ error }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Success Message -->
+                        <div class="success-message modern-alert" *ngIf="success">
+                            <div class="alert-icon">
+                                <i class="icon-success"></i>
+                            </div>
+                            <div class="alert-content">
+                                <p>{{ success }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Form Actions -->
+                        <div class="form-actions">
+                            <button
+                                type="submit"
+                                class="submit-btn action-btn primary"
+                            >
+                                <i class="icon-submit"></i>
+                                <span *ngIf="loading">Submitting...</span>
+                                <span *ngIf="!loading">Submit Request</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="clear-btn action-btn secondary"
+                                (click)="resetForm()"
+                                [disabled]="loading"
+                            >
+                                <i class="icon-clear"></i>
+                                Clear Form
+                            </button>
+
+                            <button
+                                type="button"
+                                class="test-btn action-btn info"
+                                (click)="testConnection()"
+                                [disabled]="loading"
+                            >
+                                <i class="icon-test"></i>
+                                Test Connection
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Results and Help -->
+        <div class="results-section">
+
+            <!-- Enhanced Created Reservation Display -->
+            <div class="reservation-result modern-card" *ngIf="createdReservation">
+                <div class="card-header success">
+                    <h3>
+                        <i class="icon-success-large"></i>
+                        Reservation Created Successfully!
+                    </h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="reservation-card">
+                        <div class="reservation-header">
+                            <div class="reservation-title">
+                                <h4>Reservation Details</h4>
+                            </div>
+                            <div class="reservation-status">
+                <span class="status-badge" [ngClass]="createdReservation?.status ? getStatusColor(createdReservation.status) : ''">
+                  <i class="status-icon"></i>
+                    {{ createdReservation?.status ? getStatusDisplay(createdReservation.status) : '' }}
+                </span>
+                            </div>
+                        </div>
+
+                        <div class="reservation-body">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="icon-reference"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="label">Reference Code</span>
+                                        <span class="value reference-code">{{ createdReservation?.referenceCode }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="icon-user"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="label">CIN</span>
+                                        <span class="value cin-value">{{ createdReservation?.cin }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="icon-money"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="label">Amount</span>
+                                        <span class="value amount-value">{{ createdReservation?.amount ? formatAmount(createdReservation.amount) : '' }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="detail-item">
+                                    <div class="detail-icon">
+                                        <i class="icon-reason-detail"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <span class="label">Reason</span>
+                                        <span class="value">{{ createdReservation?.reason }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reservation-actions">
+                            <button class="action-btn primary" (click)="viewReservation()">
+                                <i class="icon-view"></i>
+                                View Details
+                            </button>
+                            <button class="action-btn secondary" (click)="checkReservation()">
+                                <i class="icon-check"></i>
+                                Check Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Help Section -->
+            <div class="help-section modern-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="icon-help"></i>
+                        Need Help?
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="help-cards">
+                        <div class="help-card">
+                            <div class="help-icon">
+                                <i class="icon-format"></i>
+                            </div>
+                            <div class="help-content">
+                                <h4>CIN Format</h4>
+                                <p>Your CIN should be exactly 8 characters long</p>
+                                <p><strong>Example:</strong> 12345678</p>
+                            </div>
+                        </div>
+
+                        <div class="help-card">
+                            <div class="help-icon">
+                                <i class="icon-limits"></i>
+                            </div>
+                            <div class="help-content">
+                                <h4>Payment Limits</h4>
+                                <p>Minimum: 1 TND</p>
+                                <p>Maximum: 10,000 TND</p>
+                                <p>Processing fee: 1% (5-50 TND)</p>
+                            </div>
+                        </div>
+
+                        <div class="help-card">
+                            <div class="help-icon">
+                                <i class="icon-time"></i>
+                            </div>
+                            <div class="help-content">
+                                <h4>Processing Time</h4>
+                                <p>Requests are processed instantly</p>
+                                <p>Payment can be collected immediately</p>
+                                <p>Reference code is required for withdrawal</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Navigation Section -->
+            <div class="navigation-section modern-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="icon-navigation"></i>
+                        Quick Navigation
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="nav-buttons">
+                        <button class="nav-btn action-btn info" (click)="goToCheckReservation()">
+                            <i class="icon-search"></i>
+                            Check Reservation
+                        </button>
+                        <button class="nav-btn action-btn info" (click)="goToReservations()">
+                            <i class="icon-list"></i>
+                            View All Reservations
+                        </button>
+                        <button class="nav-btn action-btn neutral" (click)="goToHome()">
+                            <i class="icon-home"></i>
+                            Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

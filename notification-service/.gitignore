@@ -1,0 +1,11 @@
+# Default ignored files
+.idea/
+target/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+.vscode/
+*.log
+*.tmp
+.env

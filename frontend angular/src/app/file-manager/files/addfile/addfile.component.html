@@ -1,0 +1,43 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <strong style="margin-left: 500px;">Ajouter Cours</strong>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10" style="margin-left: 250px;">
+        <div class="max-w-3xl">
+            <form (ngSubmit)="onSubmit()" [formGroup]="coursForm" class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden">
+                <div class="flex flex-col gt-xs:flex-row">
+                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                        <mat-label>Contenu</mat-label>
+                        <textarea formControlName="contents" matInput rows="3"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-col gt-xs:flex-row">
+                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                        <mat-label>Description</mat-label>
+                        <textarea formControlName="description" matInput rows="3"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-col gt-xs:flex-row">
+                    <label for="fileInput" class="block text-sm font-medium leading-6 text-gray-700">Fichier</label>
+                    <input
+                        id="fileInput"
+                        type="file"
+                        (change)="onFileSelected($event)"
+                        class="block w-full text-sm text-gray-500 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                </div>
+                <button [disabled]="!coursForm.valid || !file" class="btn btn-success mt-4" type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+</div>

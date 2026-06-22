@@ -1,0 +1,60 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <strong style="margin-left: 500px;">Ajouter Matière</strong>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10" style="margin-left: 250px;">
+        <div class="max-w-3xl">
+            <form
+                (ngSubmit)="onSubmit()"
+                [formGroup]="MatiereForm"
+                class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden"
+                enctype="multipart/form-data"
+            >
+                <!-- Nom -->
+                <div class="flex flex-col gt-xs:flex-row">
+                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                        <mat-label>Nom</mat-label>
+                        <input formControlName="nom" matInput />
+                        <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                    </mat-form-field>
+                </div>
+
+                <!-- Classe Selection -->
+                <div class="flex flex-col mt-4">
+                    <mat-form-field class="flex-auto gt-xs:pr-3">
+                        <mat-label>Classe</mat-label>
+                        <mat-select formControlName="classId">
+                            <mat-option *ngFor="let classe of classes" [value]="classe.id">
+                                {{ classe.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- Image -->
+                <div class="flex flex-col mt-4">
+                    <label for="image" class="font-medium mb-2">Image</label>
+                    <input id="image" type="file" (change)="onFileSelected($event)" />
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                    [disabled]="!MatiereForm.valid || !selectedFile"
+                    class="btn btn-success mt-6"
+                    type="submit"
+                >
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: rabbitmq
+  tag: 3-management
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5672
+  managementPort: 15672
+
+rabbitmq:
+  username: rabbituser
+  password: rabbitpass
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi

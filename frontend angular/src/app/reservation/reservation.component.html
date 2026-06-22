@@ -1,0 +1,607 @@
+<div class="reservations-container">
+    <!-- Enhanced Header Section -->
+    <div class="header-section">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <i class="icon-reservations"></i>
+                    Payment Reservations Management
+                </h1>
+                <p class="page-subtitle">Manage and monitor all payment reservations</p>
+            </div>
+            <div class="header-actions">
+                <button class="refresh-btn modern-btn" (click)="refreshReservations()" [disabled]="loading">
+                    <i class="icon-refresh" [class.spinning]="loading"></i>
+                    <span *ngIf="!loading">Refresh Data</span>
+                    <span *ngIf="loading">Loading...</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Enhanced Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card total">
+                <div class="card-icon">
+                    <i class="icon-total"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total Reservations</h3>
+                    <p class="count">{{ getReservationsCount() }}</p>
+                </div>
+            </div>
+
+            <div class="summary-card active">
+                <div class="card-icon">
+                    <i class="icon-active"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Active Reservations</h3>
+                    <p class="count">{{ getActiveReservations().length }}</p>
+                </div>
+            </div>
+
+            <div class="summary-card paid">
+                <div class="card-icon">
+                    <i class="icon-paid"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Paid Reservations</h3>
+                    <p class="count">{{ getPaidReservations().length }}</p>
+                </div>
+            </div>
+
+            <div class="summary-card canceled">
+                <div class="card-icon">
+                    <i class="icon-canceled"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Canceled Reservations</h3>
+                    <p class="count">{{ getCanceledReservations().length }}</p>
+                </div>
+            </div>
+
+            <div class="summary-card amount-total">
+                <div class="card-icon">
+                    <i class="icon-money"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total Amount</h3>
+                    <p class="amount">{{ getTotalAmount() | currency:'TND':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+
+            <div class="summary-card amount-paid">
+                <div class="card-icon">
+                    <i class="icon-paid-amount"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Paid Amount</h3>
+                    <p class="amount">{{ getPaidAmount() | currency:'TND':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+
+            <div class="summary-card amount-reserved">
+                <div class="card-icon">
+                    <i class="icon-reserved-amount"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Reserved Amount</h3>
+                    <p class="count-amount">{{ getActiveReservations().length }} reservations</p>
+                    <p class="amount">{{ getReservedAmount() | currency:'TND':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+
+            <div class="summary-card amount-canceled">
+                <div class="card-icon">
+                    <i class="icon-canceled-amount"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Canceled Amount</h3>
+                    <p class="amount">{{ getCanceledAmount() | currency:'TND':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Filter Section -->
+    <div *ngIf="!loading && !error && reservations.length > 0" class="filter-section modern-card">
+        <div class="filter-header">
+            <h3>
+                <i class="icon-filter"></i>
+                Filter Reservations
+            </h3>
+            <button class="clear-filters-btn modern-btn-secondary" (click)="clearFilters()">
+                <i class="icon-clear"></i>
+                Clear All Filters
+            </button>
+        </div>
+
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="searchText">
+                    <i class="icon-search"></i>
+                    Search (CIN, Email, Phone, Reference)
+                </label>
+                <input
+                    id="searchText"
+                    type="text"
+                    [(ngModel)]="searchText"
+                    (input)="applyFilters()"
+                    placeholder="Type to search..."
+                    class="filter-input modern-input">
+            </div>
+
+            <div class="filter-group">
+                <label for="statusFilter">
+                    <i class="icon-status"></i>
+                    Status
+                </label>
+                <select
+                    id="statusFilter"
+                    [(ngModel)]="statusFilter"
+                    (change)="applyFilters()"
+                    class="filter-select modern-select">
+                    <option value="">All Statuses</option>
+                    <option value="RESERVED">RESERVED</option>
+                    <option value="PAID">PAID</option>
+                    <option value="CANCELED">CANCELED</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="amountFilter">
+                    <i class="icon-amount-range"></i>
+                    Amount Range
+                </label>
+                <div class="amount-filter">
+                    <input
+                        type="number"
+                        [(ngModel)]="minAmount"
+                        (input)="applyFilters()"
+                        placeholder="Min"
+                        class="amount-input modern-input">
+                    <span class="range-separator">to</span>
+                    <input
+                        type="number"
+                        [(ngModel)]="maxAmount"
+                        (input)="applyFilters()"
+                        placeholder="Max"
+                        class="amount-input modern-input">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="dateFilter">
+                    <i class="icon-date-range"></i>
+                    Date Range
+                </label>
+                <div class="date-filter">
+                    <input
+                        type="date"
+                        [(ngModel)]="startDate"
+                        (change)="applyFilters()"
+                        class="date-input modern-input">
+                    <span class="range-separator">to</span>
+                    <input
+                        type="date"
+                        [(ngModel)]="endDate"
+                        (change)="applyFilters()"
+                        class="date-input modern-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-summary">
+            <div class="summary-badge">
+                <i class="icon-results"></i>
+                Showing {{ filteredReservations.length }} of {{ reservations.length }} reservations
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Error Message -->
+    <div *ngIf="error" class="error-message modern-alert">
+        <div class="alert-icon">
+            <i class="icon-error"></i>
+        </div>
+        <div class="alert-content">
+            <h4>Error Loading Reservations</h4>
+            <p>{{ error }}</p>
+            <button class="retry-btn" (click)="refreshReservations()">
+                <i class="icon-retry"></i>
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <!-- Enhanced Loading State -->
+    <div *ngIf="loading && !error" class="loading-container">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading reservations...</p>
+        </div>
+    </div>
+
+    <!-- Enhanced Reservations Table -->
+    <div *ngIf="!loading && !error && reservations.length > 0" class="reservations-table-container modern-card">
+        <div class="table-header">
+            <h3>
+                <i class="icon-table"></i>
+                All Reservations
+            </h3>
+        </div>
+        <div class="table-wrapper">
+            <table class="reservations-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CIN</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Reference Code</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>Created</th>
+                    <th>Expires</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let reservation of getPaginatedTableData(); trackBy: trackByReservationId"
+                    [class]="getStatusClass(reservation.status)"
+                    class="table-row">
+                    <td class="id-cell">{{ reservation.id }}</td>
+                    <td class="cin-cell">{{ reservation.cin }}</td>
+                    <td class="email-cell">{{ reservation.email || 'N/A' }}</td>
+                    <td class="phone-cell">{{ reservation.phoneNumber || 'N/A' }}</td>
+                    <td class="reference-cell">{{ reservation.referenceCode }}</td>
+                    <td class="amount-cell">{{ reservation.amount | currency:'TND':'symbol':'1.2-2' }}</td>
+                    <td class="status-cell">
+              <span class="status-badge" [class]="getStatusClass(reservation.status)">
+                {{ reservation.status }}
+              </span>
+                    </td>
+                    <td class="reason-cell">{{ reservation.reason || 'N/A' }}</td>
+                    <td class="date-cell">{{ reservation.createdDate | date:'short' }}</td>
+                    <td class="date-cell">{{ reservation.expiredDate | date:'short' }}</td>
+                    <td class="actions-cell">
+                        <button
+                            class="view-details-btn action-btn"
+                            (click)="viewReservationDetails(reservation.id)"
+                            title="View full reservation details">
+                            <i class="icon-view"></i>
+                            View Details
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Enhanced Table Pagination -->
+        <div class="pagination-container" *ngIf="getTableTotalPages() > 1">
+            <div class="pagination-info">
+        <span class="pagination-text">
+          Page {{ currentTablePage }} of {{ getTableTotalPages() }}
+            ({{ filteredReservations.length }} total items)
+        </span>
+            </div>
+            <div class="pagination-controls">
+                <button
+                    class="pagination-btn"
+                    [disabled]="currentTablePage === 1"
+                    (click)="goToTablePage(currentTablePage - 1)">
+                    <i class="icon-prev"></i>
+                    Previous
+                </button>
+
+                <button
+                    *ngFor="let page of getTablePages()"
+                    class="pagination-btn page-number"
+                    [class.active]="page === currentTablePage"
+                    (click)="goToTablePage(page)">
+                    {{ page }}
+                </button>
+
+                <button
+                    class="pagination-btn"
+                    [disabled]="currentTablePage === getTableTotalPages()"
+                    (click)="goToTablePage(currentTablePage + 1)">
+                    Next
+                    <i class="icon-next"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced No Data Message -->
+    <div *ngIf="!loading && !error && reservations.length === 0" class="no-data-container">
+        <div class="no-data-content">
+            <div class="no-data-icon">
+                <i class="icon-no-data"></i>
+            </div>
+            <h3>No Reservations Found</h3>
+            <p>There are currently no payment reservations in the system.</p>
+            <button class="reload-btn modern-btn" (click)="refreshReservations()">
+                <i class="icon-reload"></i>
+                Reload Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Enhanced Filter Sections -->
+    <div *ngIf="!loading && !error && reservations.length > 0" class="filter-sections">
+
+        <!-- Active Reservations Section -->
+        <div class="section-container modern-card" *ngIf="getActiveReservations().length > 0">
+            <div class="section-header">
+                <h3>
+                    <i class="icon-active-section"></i>
+                    Active Reservations ({{ getActiveReservations().length }})
+                </h3>
+            </div>
+            <div class="reservations-grid">
+                <div *ngFor="let reservation of getPaginatedActiveReservations()"
+                     class="reservation-card active-card">
+                    <div class="card-header-mini">
+                        <div class="card-status active">
+                            <i class="icon-active-status"></i>
+                            Active
+                        </div>
+                    </div>
+                    <div class="card-body-mini">
+                        <h4 class="card-title">
+                            <i class="icon-user"></i>
+                            {{ reservation.cin }}
+                        </h4>
+                        <div class="card-details">
+                            <p class="detail-item" *ngIf="reservation.email">
+                                <i class="icon-email-mini"></i>
+                                <span class="label">Email:</span> {{ reservation.email }}
+                            </p>
+                            <p class="detail-item" *ngIf="reservation.phoneNumber">
+                                <i class="icon-phone-mini"></i>
+                                <span class="label">Phone:</span> {{ reservation.phoneNumber }}
+                            </p>
+                            <p class="detail-item">
+                                <i class="icon-reference-mini"></i>
+                                <span class="label">Reference:</span> <strong>{{ reservation.referenceCode }}</strong>
+                            </p>
+                            <p class="detail-item amount-highlight">
+                                <i class="icon-amount-mini"></i>
+                                <span class="label">Amount:</span> {{ reservation.amount | currency:'TND':'symbol':'1.2-2' }}
+                            </p>
+                            <p class="detail-item expires-highlight">
+                                <i class="icon-expires-mini"></i>
+                                <span class="label">Expires:</span> {{ reservation.expiredDate | date:'short' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button
+                            class="view-details-btn card-action-btn"
+                            (click)="viewReservationDetails(reservation.id)"
+                            title="View full reservation details">
+                            <i class="icon-view-mini"></i>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Reservations Pagination -->
+            <div class="pagination-container" *ngIf="getActiveTotalPages() > 1">
+                <div class="pagination-info">
+                    <span class="pagination-text">Page {{ currentActivePage }} of {{ getActiveTotalPages() }}</span>
+                </div>
+                <div class="pagination-controls">
+                    <button
+                        class="pagination-btn"
+                        [disabled]="currentActivePage === 1"
+                        (click)="goToActivePage(currentActivePage - 1)">
+                        <i class="icon-prev"></i>
+                        Previous
+                    </button>
+
+                    <button
+                        *ngFor="let page of getActivePages()"
+                        class="pagination-btn page-number"
+                        [class.active]="page === currentActivePage"
+                        (click)="goToActivePage(page)">
+                        {{ page }}
+                    </button>
+
+                    <button
+                        class="pagination-btn"
+                        [disabled]="currentActivePage === getActiveTotalPages()"
+                        (click)="goToActivePage(currentActivePage + 1)">
+                        Next
+                        <i class="icon-next"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paid Reservations Section -->
+        <div class="section-container modern-card" *ngIf="getPaidReservations().length > 0">
+            <div class="section-header">
+                <h3>
+                    <i class="icon-paid-section"></i>
+                    Completed Payments ({{ getPaidReservations().length }})
+                </h3>
+            </div>
+            <div class="reservations-grid">
+                <div *ngFor="let reservation of getPaginatedPaidReservations()"
+                     class="reservation-card paid-card">
+                    <div class="card-header-mini">
+                        <div class="card-status paid">
+                            <i class="icon-paid-status"></i>
+                            Paid
+                        </div>
+                    </div>
+                    <div class="card-body-mini">
+                        <h4 class="card-title">
+                            <i class="icon-user"></i>
+                            {{ reservation.cin }}
+                        </h4>
+                        <div class="card-details">
+                            <p class="detail-item" *ngIf="reservation.email">
+                                <i class="icon-email-mini"></i>
+                                <span class="label">Email:</span> {{ reservation.email }}
+                            </p>
+                            <p class="detail-item" *ngIf="reservation.phoneNumber">
+                                <i class="icon-phone-mini"></i>
+                                <span class="label">Phone:</span> {{ reservation.phoneNumber }}
+                            </p>
+                            <p class="detail-item">
+                                <i class="icon-reference-mini"></i>
+                                <span class="label">Reference:</span> <strong>{{ reservation.referenceCode }}</strong>
+                            </p>
+                            <p class="detail-item amount-highlight">
+                                <i class="icon-amount-mini"></i>
+                                <span class="label">Amount:</span> {{ reservation.amount | currency:'TND':'symbol':'1.2-2' }}
+                            </p>
+                            <p class="detail-item completed-highlight">
+                                <i class="icon-completed-mini"></i>
+                                <span class="label">Completed:</span> {{ reservation.createdDate | date:'short' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button
+                            class="view-details-btn card-action-btn"
+                            (click)="viewReservationDetails(reservation.id)"
+                            title="View full reservation details">
+                            <i class="icon-view-mini"></i>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paid Reservations Pagination -->
+            <div class="pagination-container" *ngIf="getPaidTotalPages() > 1">
+                <div class="pagination-info">
+                    <span class="pagination-text">Page {{ currentPaidPage }} of {{ getPaidTotalPages() }}</span>
+                </div>
+                <div class="pagination-controls">
+                    <button
+                        class="pagination-btn"
+                        [disabled]="currentPaidPage === 1"
+                        (click)="goToPaidPage(currentPaidPage - 1)">
+                        <i class="icon-prev"></i>
+                        Previous
+                    </button>
+
+                    <button
+                        *ngFor="let page of getPaidPages()"
+                        class="pagination-btn page-number"
+                        [class.active]="page === currentPaidPage"
+                        (click)="goToPaidPage(page)">
+                        {{ page }}
+                    </button>
+
+                    <button
+                        class="pagination-btn"
+                        [disabled]="currentPaidPage === getPaidTotalPages()"
+                        (click)="goToPaidPage(currentPaidPage + 1)">
+                        Next
+                        <i class="icon-next"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canceled Reservations Section -->
+        <div class="section-container modern-card" *ngIf="getCanceledReservations().length > 0">
+            <div class="section-header">
+                <h3>
+                    <i class="icon-canceled-section"></i>
+                    Canceled Reservations ({{ getCanceledReservations().length }})
+                </h3>
+            </div>
+            <div class="reservations-grid">
+                <div *ngFor="let reservation of getPaginatedCanceledReservations()"
+                     class="reservation-card canceled-card">
+                    <div class="card-header-mini">
+                        <div class="card-status canceled">
+                            <i class="icon-canceled-status"></i>
+                            Canceled
+                        </div>
+                    </div>
+                    <div class="card-body-mini">
+                        <h4 class="card-title">
+                            <i class="icon-user"></i>
+                            {{ reservation.cin }}
+                        </h4>
+                        <div class="card-details">
+                            <p class="detail-item" *ngIf="reservation.email">
+                                <i class="icon-email-mini"></i>
+                                <span class="label">Email:</span> {{ reservation.email }}
+                            </p>
+                            <p class="detail-item" *ngIf="reservation.phoneNumber">
+                                <i class="icon-phone-mini"></i>
+                                <span class="label">Phone:</span> {{ reservation.phoneNumber }}
+                            </p>
+                            <p class="detail-item">
+                                <i class="icon-reference-mini"></i>
+                                <span class="label">Reference:</span> <strong>{{ reservation.referenceCode }}</strong>
+                            </p>
+                            <p class="detail-item amount-highlight">
+                                <i class="icon-amount-mini"></i>
+                                <span class="label">Amount:</span> {{ reservation.amount | currency:'TND':'symbol':'1.2-2' }}
+                            </p>
+                            <p class="detail-item canceled-highlight">
+                                <i class="icon-created-mini"></i>
+                                <span class="label">Created:</span> {{ reservation.createdDate | date:'short' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button
+                            class="view-details-btn card-action-btn"
+                            (click)="viewReservationDetails(reservation.id)"
+                            title="View full reservation details">
+                            <i class="icon-view-mini"></i>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canceled Reservations Pagination -->
+            <div class="pagination-container" *ngIf="getCanceledTotalPages() > 1">
+                <div class="pagination-info">
+                    <span class="pagination-text">Page {{ currentCanceledPage }} of {{ getCanceledTotalPages() }}</span>
+                </div>
+                <div class="pagination-controls">
+                    <button
+                        class="pagination-btn"
+                        [disabled]="currentCanceledPage === 1"
+                        (click)="goToCanceledPage(currentCanceledPage - 1)">
+                        <i class="icon-prev"></i>
+                        Previous
+                    </button>
+
+                    <button
+                        *ngFor="let page of getCanceledPages()"
+                        class="pagination-btn page-number"
+                        [class.active]="page === currentCanceledPage"
+                        (click)="goToCanceledPage(page)">
+                        {{ page }}
+                    </button>
+
+                    <button
+                        class="pagination-btn"
+                        [disabled]="currentCanceledPage === getCanceledTotalPages()"
+                        (click)="goToCanceledPage(currentCanceledPage + 1)">
+                        Next
+                        <i class="icon-next"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

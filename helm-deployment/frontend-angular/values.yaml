@@ -1,0 +1,36 @@
+replicaCount: 2
+
+image:
+  repository: theoldisback/frontend-angular
+  tag: "localcluster"
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 4200
+  nodePort: 30420
+
+ingress:
+  enabled: false
+
+resources:
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# No environment variables needed for Angular static files

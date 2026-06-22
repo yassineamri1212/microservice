@@ -1,0 +1,45 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent"
+    >
+        <div class="flex-1 min-w-0">
+            <div class="mt-2">
+                <h2
+                    class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate text-center"
+                >
+                    Assigner un Élève à la Classe
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10 flex justify-center">
+        <div class="max-w-lg w-full">
+            <form
+                (ngSubmit)="assignStudent()"
+                class="flex flex-col mt-8 p-8 pb-4 bg-card rounded-2xl shadow overflow-hidden"
+            >
+                <div class="flex flex-col">
+                    <mat-form-field class="w-full">
+                        <mat-label>Choisir un Élève</mat-label>
+                        <mat-select [(ngModel)]="selectedStudentId" name="student" required>
+                            <mat-option *ngFor="let student of students" [value]="student.id">
+                               ({{ student.email }})     {{ student.attributes["niveau"] }}
+                                {{ student.enabled ? 'payé' : 'non payé' }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <button
+                    [disabled]="!selectedStudentId"
+                    class="btn btn-success mt-4"
+                    type="submit"
+                >
+                    Assigner l'Élève
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

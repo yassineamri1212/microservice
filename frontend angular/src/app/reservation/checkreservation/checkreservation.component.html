@@ -1,0 +1,112 @@
+<div class="check-reservation-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1>Check Your Reservation</h1>
+    <p class="subtitle">Enter your CIN and Reference Code to view your reservation details</p>
+  </div>
+
+  <!-- Check Form -->
+  <div class="check-form-container">
+    <form class="check-form" (ngSubmit)="checkReservation()" #reservationForm="ngForm">
+      
+      <!-- CIN Field -->
+      <div class="form-group">
+        <label for="cin">CIN (National ID)</label>
+        <input
+          type="text"
+          id="cin"
+          name="cin"
+          [(ngModel)]="cin"
+          (input)="onCinChange()"
+          placeholder="Enter your CIN (e.g., 14488055)"
+          required
+          maxlength="20"
+          class="form-input"
+          [class.error]="error && !cin"
+        />
+        <small class="field-help">Enter your national identification number</small>
+      </div>
+
+      <!-- Reference Code Field -->
+      <div class="form-group">
+        <label for="referenceCode">Reference Code</label>
+        <input
+          type="text"
+          id="referenceCode"
+          name="referenceCode"
+          [(ngModel)]="referenceCode"
+          (input)="onReferenceChange()"
+          placeholder="Enter your reference code"
+          required
+          maxlength="50"
+          class="form-input"
+          [class.error]="error && !referenceCode"
+        />
+        <small class="field-help">Enter the reference code from your reservation</small>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="error" class="error-message">
+        <p>❌ {{ error }}</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="check-btn"
+          [disabled]="loading || !cin || !referenceCode"
+        >
+          <span *ngIf="!loading">🔍 Check Reservation</span>
+          <span *ngIf="loading">⏳ Checking...</span>
+        </button>
+        
+        <button 
+          type="button" 
+          class="clear-btn"
+          (click)="clearForm()"
+          [disabled]="loading"
+        >
+          🗑️ Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Help Section -->
+  <div class="help-section">
+    <h3>Need Help?</h3>
+    <div class="help-cards">
+      <div class="help-card">
+        <h4>📋 CIN Format</h4>
+        <p>Your CIN should be in the format: <strong>AB123456</strong></p>
+        <p>Usually 8 characters (2 letters + 6 numbers)</p>
+      </div>
+      
+      <div class="help-card">
+        <h4>🔗 Reference Code</h4>
+        <p>The reference code was provided when your reservation was created</p>
+        <p>Check your email or confirmation document</p>
+      </div>
+      
+      <div class="help-card">
+        <h4>❓ Can't Find Your Info?</h4>
+        <p>Contact customer support if you can't locate your reservation details</p>
+        <p>Have your personal information ready</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section -->
+  <div class="examples-section">
+    <h3>Example Input</h3>
+    <div class="example-box">
+      <div class="example-item">
+        <strong>CIN:</strong> <code>AB123456</code>
+      </div>
+      <div class="example-item">
+        <strong>Reference:</strong> <code>CNSS-AB123456-1725876543210</code>
+      </div>
+    </div>
+  </div>
+</div>

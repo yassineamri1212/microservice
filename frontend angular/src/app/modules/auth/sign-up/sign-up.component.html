@@ -1,0 +1,206 @@
+<div class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0">
+    <div class="md:flex md:items-center md:justify-end w-full sm:w-auto md:h-full md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card">
+        <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
+            <!-- Logo -->
+            <div class="w-50">
+                <img src="assets/images/logo/images-removebg-preview.png" alt="Logo">
+            </div>
+
+            <!-- Title -->
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Sign Up</div>
+            <div class="flex items-baseline mt-0.5 font-medium">
+                <div>Already have an account?</div>
+                <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/sign-in']">Sign in</a>
+            </div>
+
+            <!-- Alert -->
+            <fuse-alert class="mt-8"
+                        *ngIf="showAlert"
+                        [appearance]="'outline'"
+                        [showIcon]="false"
+                        [type]="alert.type"
+                        [@shake]="alert.type === 'error'">
+                {{alert.message}}
+            </fuse-alert>
+
+            <!-- Sign Up form -->
+            <form class="mt-8" [formGroup]="UserForm" #signUpNgForm="ngForm" (ngSubmit)="onSubmit()">
+
+                <!-- Username field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Username</mat-label>
+                    <input id="username" matInput formControlName="username" required />
+                    <mat-error *ngIf="UserForm.get('username').hasError('required')">
+                        Username is required
+                    </mat-error>
+                    <mat-error *ngIf="UserForm.get('username').hasError('minlength')">
+                        Username must be at least 3 characters long
+                    </mat-error>
+                    <mat-error *ngIf="UserForm.get('username').hasError('maxlength')">
+                        Username must be less than 20 characters
+                    </mat-error>
+                    <mat-error *ngIf="UserForm.get('username').hasError('pattern')">
+                        Username can only contain letters, numbers, and underscores
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- First Name field -->
+                <mat-form-field class="w-full">
+                    <mat-label>First Name</mat-label>
+                    <input id="firstName" matInput formControlName="firstName" required />
+                    <mat-error *ngIf="UserForm.get('firstName').hasError('required')">
+                        First name is required
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Last Name field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Last Name</mat-label>
+                    <input id="lastName" matInput formControlName="lastName" required />
+                    <mat-error *ngIf="UserForm.get('lastName').hasError('required')">
+                        Last name is required
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Email field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Email address</mat-label>
+                    <input id="email" matInput formControlName="email" required email />
+                    <mat-error *ngIf="UserForm.get('email').hasError('required')">
+                        Email address is required
+                    </mat-error>
+                    <mat-error *ngIf="UserForm.get('email').hasError('email') || UserForm.get('email').hasError('pattern')">
+                        Please enter a valid email address
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Password field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Password</mat-label>
+                    <input id="password" matInput type="password" formControlName="password" required />
+                    <mat-error *ngIf="UserForm.get('password').hasError('required')">
+                        Password is required
+                    </mat-error>
+                    <mat-error *ngIf="UserForm.get('password').hasError('minlength')">
+                        Password must be at least 6 characters long
+                    </mat-error>
+                    <mat-error *ngIf="UserForm.get('password').hasError('pattern')">
+                        Password must contain at least one uppercase letter, one lowercase letter, and one number
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Phone Number field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Phone Number</mat-label>
+                    <input id="phoneNumber" matInput formControlName="phoneNumber" required />
+                    <mat-error *ngIf="UserForm.get('phoneNumber').hasError('pattern')">
+                        Please enter a valid 10-digit phone number
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Address field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Address</mat-label>
+                    <input id="address" matInput formControlName="address" />
+                </mat-form-field>
+
+                <!-- Birth Date field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Birth Date</mat-label>
+                    <input matInput [matDatepicker]="birthDatePicker" formControlName="birthDate"
+                           [max]="maxDate" [min]="minDate" readonly>
+                    <mat-hint>You must be at least 18 years old</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #birthDatePicker></mat-datepicker>
+                    <mat-error *ngIf="UserForm.get('birthDate')?.hasError('required')">
+                        Birth date is required
+                    </mat-error>
+                    <mat-error *ngIf="UserForm.get('birthDate')?.hasError('minAge')">
+                        You must be at least 18 years old
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Age field (display only) -->
+                <mat-form-field class="w-full">
+                    <mat-label>Age (calculated)</mat-label>
+                    <input id="age" matInput formControlName="age" readonly />
+                    <mat-hint>Age is automatically calculated from birth date</mat-hint>
+                </mat-form-field>
+                <mat-form-field class="w-full">
+                    <mat-label>Role</mat-label>
+                    <mat-select [formControl]="UserForm.controls['role']">
+                        <mat-option value="bank_agent">Bank agent</mat-option>
+                        <mat-option value="cnss_agent">cnss agent</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="UserForm.get('role').hasError('required')">
+                        Role is required
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="avatar-selection">
+                    <label for="avatar">Choose an Avatar:</label>
+                    <div class="avatar-grid">
+                        <div
+                            *ngFor="let avatar of avatars"
+                            class="avatar-item"
+                            (click)="selectAvatar(avatar)"
+                        >
+                            <img [src]="'assets/images/avatars/' + avatar" [alt]="avatar" class="avatar-img"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected avatar preview -->
+                <div *ngIf="image">
+                    <p>Selected Avatar:</p>
+                    <img [src]="'assets/images/avatars/' + image" [alt]="image" class="avatar-preview"/>
+                </div>
+
+                <!-- Agreement field -->
+                <mat-checkbox formControlName="agreements" required>
+                    I agree to the terms and conditions
+                </mat-checkbox>
+                <mat-error *ngIf="UserForm.get('agreements').hasError('requiredTrue')">
+                    You must agree to the terms and conditions
+                </mat-error>
+
+                <!-- Submit button -->
+                <button class="fuse-mat-button-large w-full mt-6" mat-flat-button [color]="'primary'" [disabled]="UserForm.invalid">
+                    Sign Up
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="relative hidden md:flex flex-auto items-center justify-center w-1/2 h-full p-16 lg:px-28 overflow-hidden bg-gray-800 dark:border-l">
+        <!-- Background - @formatter:off -->
+        <!-- Rings -->
+        <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <g class="text-gray-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+                <circle r="234" cx="196" cy="23"></circle>
+                <circle r="234" cx="790" cy="491"></circle>
+            </g>
+        </svg>
+        <!-- Dots -->
+        <svg class="absolute -top-16 -right-16 text-gray-700" viewBox="0 0 220 192" width="220" height="192" fill="none">
+            <defs>
+                <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
+                </pattern>
+            </defs>
+            <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"></rect>
+        </svg>
+        <!-- @formatter:on -->
+        <!-- Content -->
+        <div class="z-10 relative w-full max-w-2xl">
+            <div class="text-7xl font-bold leading-none text-gray-100">
+                <div>Join Us</div>
+                <div>Become part of our community</div>
+            </div>
+            <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
+                Fuse helps developers to build organized and well-coded dashboards full of beautiful and rich modules.
+                Join us and start building your application today.
+            </div>
+        </div>
+    </div>
+</div>

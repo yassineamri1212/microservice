@@ -1,0 +1,6 @@
+apiVersion: v2
+name: apigateway
+description: Helm chart for API Gateway service
+type: application
+version: 0.1.3
+appVersion: "1.0.0"

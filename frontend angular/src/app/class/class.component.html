@@ -1,0 +1,145 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="bg-card">
+        <div class="flex flex-col w-full max-w-screen-xl mx-auto px-6 sm:px-8">
+            <div class="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-8 sm:my-12">
+                <!-- Avatar and name -->
+                <div class="flex flex-auto items-center min-w-0">
+                    <div class="flex-0 w-16 h-16 rounded-full overflow-hidden">
+                        <img
+                            class="w-full h-full object-cover"
+                            src="assets/images/avatars/{{sessionStorage.getItem('avatar')}}">
+                    </div>
+                    <div class="flex flex-col min-w-0 ml-4">
+                        <ng-container *transloco="let t">
+                            <div class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">{{t('welcome-back')}}, {{sessionStorage.getItem('username')}}</div>
+                        </ng-container>
+
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center mt-6 sm:mt-0 sm:ml-2 space-x-3">
+                    <button
+                        class="bg-accent"
+                        mat-flat-button
+                        [color]="'accent'">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                        <span class="ml-2">Messages</span>
+                    </button>
+                    <button
+                        mat-flat-button
+                        [color]="'primary'">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_solid:cog-8-tooth'"></mat-icon>
+                        <span class="ml-2">Settings</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Project selector -->
+
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto border-t -mt-px pt-4 sm:pt-6">
+        <div class="w-full max-w-screen-xl mx-auto">
+            <!-- Tabs -->
+            <mat-tab-group
+                class="sm:px-2"
+                mat-stretch-tabs="false"
+                [animationDuration]="'0'">
+
+                <!-- Class Tabs -->
+                <mat-tab *ngFor="let classe of classes">
+                    <ng-template mat-tab-label>
+                        <span class="inline-flex items-center space-x-2">
+                            <span class="">{{classe.name}}</span>
+                            <span class="px-2 py-1 text-sm rounded-full bg-primary-100 text-on-primary-100">{{ classe.eleves.length }}</span>
+                        </span>
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <h2 class="text-xl font-bold">eleves</h2>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
+                            <!-- Students Section -->
+                            <ng-container *ngFor="let eleve of classe.eleves">
+                                <div class="flex flex-col flex-auto items-center bg-card shadow rounded-2xl overflow-hidden">
+                                    <div class="flex flex-col flex-auto w-full p-8 text-center">
+                                        <div class="w-32 h-32 mx-auto rounded-full overflow-hidden">
+                                            <img
+                                                class="w-full h-full object-cover"
+                                                [src]="imagePath">
+                                        </div>
+                                        <div class="mt-6 font-medium">{{eleve.nom}}</div>
+                                        <div class="text-secondary">{{eleve.email}}</div>
+                                    </div>
+                                    <div class="flex items-center w-full border-t divide-x">
+                                        <a
+                                            class="flex flex-auto items-center justify-center py-4 hover:bg-hover"
+                                            [href]="'mailto:' + eleve.email">
+                                            <mat-icon
+                                                class="icon-size-5 text-hint"
+                                                [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                                            <span class="ml-2">Email</span>
+                                        </a>
+                                        <a
+                                            class="flex flex-auto items-center justify-center py-4 hover:bg-hover"
+                                            [href]="'tel:'">
+                                            <mat-icon
+                                                class="icon-size-5 text-hint"
+                                                [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                                            <span class="ml-2">Call</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+
+                        <!-- Professors Section -->
+                        <div class="mt-8">
+                            <h2 class="text-xl font-bold">Professors</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0 mt-4">
+                                <ng-container *ngFor="let professeur of classe.professors">
+                                    <div class="flex flex-col flex-auto items-center bg-card shadow rounded-2xl overflow-hidden">
+                                        <div class="flex flex-col flex-auto w-full p-8 text-center">
+                                            <div class="w-32 h-32 mx-auto rounded-full overflow-hidden">
+                                                <img
+                                                    class="w-full h-full object-cover"
+                                                    [src]="imagePath">
+                                            </div>
+                                            <div class="mt-6 font-medium">{{professeur.name}}</div>
+                                            <div class="text-secondary">{{professeur.email}}</div>
+                                        </div>
+                                        <div class="flex items-center w-full border-t divide-x">
+                                            <a
+                                                class="flex flex-auto items-center justify-center py-4 hover:bg-hover"
+                                                [href]="'mailto:' + professeur.email">
+                                                <mat-icon
+                                                    class="icon-size-5 text-hint"
+                                                    [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                                                <span class="ml-2">Email</span>
+                                            </a>
+                                            <a
+                                                class="flex flex-auto items-center justify-center py-4 hover:bg-hover"
+                                                [href]="'tel:'">
+                                                <mat-icon
+                                                    class="icon-size-5 text-hint"
+                                                    [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                                                <span class="ml-2">Call</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+
+</div>

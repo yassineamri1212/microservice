@@ -1,0 +1,236 @@
+/* --- General Container --- */
+.check-reservation-container {
+    padding: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: #f0f4f8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- Header --- */
+.header-section {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.15);
+}
+
+.header-section h1 {
+    color: #0877c6;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #555;
+    font-size: 1.1rem;
+}
+
+/* --- Form Container --- */
+.check-form-container {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.15);
+    margin-bottom: 40px;
+}
+
+.check-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* --- Form Groups --- */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #0877c6;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #c3d4e0;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #0877c6;
+    box-shadow: 0 0 0 4px rgba(8, 119, 198, 0.15);
+}
+
+.form-input.error {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.field-help {
+    display: block;
+    margin-top: 5px;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* --- Error Message --- */
+.error-message {
+    background: #ffe5e5;
+    border: 1px solid #ffcccc;
+    color: #c0392b;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* --- Buttons --- */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.check-btn {
+    background: #0877c6;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 180px;
+}
+
+.check-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.3);
+}
+
+.clear-btn {
+    background: #555;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.clear-btn:hover:not(:disabled) {
+    background: #333;
+}
+
+/* --- Help Section --- */
+.help-section {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.15);
+    margin-bottom: 30px;
+}
+
+.help-section h3 {
+    text-align: center;
+    color: #0877c6;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+}
+
+.help-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.help-card {
+    background: #f0f4f8;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid #0877c6;
+    flex: 1 1 250px;
+    min-width: 250px;
+    text-align: left;
+}
+
+.help-card h4 {
+    color: #0877c6;
+    margin-bottom: 10px;
+}
+
+.help-card p {
+    color: #555;
+    font-size: 0.95rem;
+}
+
+/* --- Examples Section --- */
+.examples-section {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.15);
+}
+
+.examples-section h3 {
+    text-align: center;
+    color: #0877c6;
+    margin-bottom: 15px;
+}
+
+.example-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.example-item {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.example-item strong {
+    min-width: 120px;
+    color: #0877c6;
+}
+
+.example-item code {
+    background: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .help-cards {
+        flex-direction: column;
+    }
+
+    .example-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .check-form-container, .help-section, .examples-section {
+        padding: 20px;
+    }
+}
+

@@ -1,0 +1,99 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:postgresql://postgresdb:5432/notification_db
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: rabbituser
+    password: rabbitpass
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+# Service URLs for inter-service communication
+services:
+  meet-service:
+    url: ${MEET_SERVICE_URL:http://meet-service.default.svc.cluster.local:8081}
+  payment-service:
+    url: ${PAYMENT_SERVICE_URL:http://payment-service.default.svc.cluster.local:8082}
+  cnss-service:
+    url: ${CNSS_SERVICE_URL:http://cnss-service.default.svc.cluster.local:8080}
+  user-service:
+    url: ${USER_SERVICE_URL:http://user-service.default.svc.cluster.local:8083}
+
+# Notification settings
+notification:
+  # WebSocket settings
+  websocket:
+    endpoint: "/ws-notifications"
+    topic-prefix: "/topic/notifications"
+  
+  # Email settings
+  email:
+    enabled: ${EMAIL_NOTIFICATIONS_ENABLED:false}
+    from-address: ${FROM_EMAIL:noreply@stb-stages.com}
+    from-name: ${FROM_NAME:STB Platform}
+  
+  # Push notification settings
+  push:
+    enabled: ${PUSH_NOTIFICATIONS_ENABLED:true}
+    firebase:
+      enabled: ${FIREBASE_ENABLED:false}
+      service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:}
+  
+  # Scheduling settings
+  scheduler:
+    enabled: true
+    fixed-delay: 30000 # Check every 30 seconds for pending notifications
+  
+  # Cleanup settings
+  cleanup:
+    enabled: true
+    days-to-keep: 30 # Keep notifications for 30 days
+    cleanup-interval: "0 0 2 * * ?" # Daily at 2 AM
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false
+
+logging:
+  level:
+    tn.esprit.notificationservice: INFO
+    org.springframework.web: DEBUG
+    org.springframework.amqp: INFO
+    org.springframework.websocket: DEBUG

@@ -1,0 +1,63 @@
+# This file provides custom values for the grafana/grafana Helm chart.
+
+# Resource optimization for minikube
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Persistence configuration (reduced for minikube)
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClassName: standard
+
+# Performance settings
+env:
+  GF_INSTALL_PLUGINS: ""
+  GF_RENDERING_SERVER_URL: ""
+  GF_RENDERING_CALLBACK_URL: ""
+  GF_LOG_LEVEL: warn
+  GF_EXPLORE_ENABLED: "false"
+  GF_ALERTING_ENABLED: "false"
+
+# This section automatically provisions the Loki data source in Grafana,
+# so you don't have to add it manually through the UI.
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Loki
+      type: loki
+      # This is the internal Kubernetes DNS address for the Loki service.
+      # It assumes Loki is installed in the 'loki' namespace.
+      url: http://loki.loki:3100
+      access: proxy
+      isDefault: true
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server.prometheus:80
+      access: proxy
+
+# This section can be used to automatically import pre-made dashboards.
+# For now, it's empty, but you can add dashboards here later.
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers: []
+
+# Security and admin settings
+adminUser: admin
+adminPassword: admin123
+
+# UI settings for reduced resource usage
+grafana.ini:
+  server:
+    root_url: "%(protocol)s://%(domain)s/grafana/"
+    serve_from_sub_path: true
+  analytics:
+    reporting_enabled: false
+    check_for_updates: false

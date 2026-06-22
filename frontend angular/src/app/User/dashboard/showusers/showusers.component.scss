@@ -1,0 +1,165 @@
+/* --- Card Backgrounds & Shadows --- */
+.bg-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.bg-card:hover {
+    box-shadow: 0 8px 20px rgba(8, 119, 198, 0.2);
+}
+
+/* --- Header Section --- */
+.text-primary-600 { color: #0877c6 !important; }
+.bg-primary-100 { background-color: #e0f0fc !important; }
+.text-secondary { color: #555 !important; }
+
+.flex-auto { flex: 1 1 auto; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* --- Buttons --- */
+button[mat-flat-button] {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+}
+
+button[mat-flat-button]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.2);
+}
+
+/* --- Filters Section --- */
+.mat-form-field {
+    width: 100%;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Users Grid --- */
+.grid > ng-container > div {
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grid > ng-container > div:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(8, 119, 198, 0.15);
+}
+
+/* --- Avatar --- */
+.w-24.h-24 { width: 96px; height: 96px; }
+.bg-gray-200 { background-color: #f0f0f0; }
+
+/* --- Role Badge --- */
+span.inline-flex {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.bg-red-100 { background-color: #ffe5e5; color: #c0392b !important; }
+.bg-blue-100 { background-color: #e0f0fc; color: #0877c6 !important; }
+.bg-gray-100 { background-color: #f0f0f0; color: #555 !important; }
+.bg-green-100 { background-color: #e6f7e6; color: #27ae60 !important; }
+
+/* --- Status Badge --- */
+span.text-green-800 { color: #27ae60 !important; }
+span.text-red-800 { color: #c0392b !important; }
+
+/* --- Actions Section --- */
+.flex.items-center.w-full.border-t > * {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    transition: background 0.3s ease;
+}
+
+.flex.items-center.w-full.border-t > *:hover {
+    background-color: rgba(8, 119, 198, 0.05);
+    cursor: pointer;
+}
+
+/* --- Empty State --- */
+.flex.flex-col.items-center.justify-center {
+    text-align: center;
+}
+
+.text-gray-400 { color: #aaa !important; }
+.text-gray-500 { color: #666 !important; }
+.text-gray-900 { color: #222 !important; }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3.lg\:grid-cols-4 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+/* --- Flat Buttons (Primary / Accent) --- */
+button[mat-flat-button] {
+    background-color: #0877c6;
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+}
+
+button[mat-flat-button]:hover {
+    background-color: #065a9c; /* Slightly darker blue */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.25);
+}
+
+button[mat-flat-button]:disabled {
+    background-color: #a3c6e0; /* Light blue for disabled */
+    color: #fff;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* --- Stroked Buttons (Clear / Secondary) --- */
+button[mat-stroked-button] {
+    background-color: white;
+    color: #0877c6;
+    border: 2px solid #0877c6;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+}
+
+button[mat-stroked-button]:hover {
+    background-color: #0877c6;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(8, 119, 198, 0.15);
+}
+
+button[mat-stroked-button]:disabled {
+    background-color: #f0f4f8; /* Light gray */
+    color: #a3c6e0;
+    border-color: #a3c6e0;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}

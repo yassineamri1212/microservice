@@ -1,0 +1,6 @@
+apiVersion: v2
+name: meet-service
+description: Helm chart for meet microservice
+type: application
+version: 0.1.1
+appVersion: "1.0"

@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: dpage/pgadmin4
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30050      # change if needed
+
+pgadmin:
+  email: admin@admin.com
+  password: admin
+
+postgres:
+  host: postgresdb
+  port: 5432
+  username: postgres
+  password: 123456
+  database: paiement_db   # default database to connect

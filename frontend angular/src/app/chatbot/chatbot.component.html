@@ -1,0 +1,29 @@
+
+
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <img src="assets/images/logo/esprit1.png" style="width: 200px;height: 150px; margin-left: 550px;">
+
+        <h2 style="color: black;"> How Can We Help You ?</h2>
+
+    </div>
+    <div class="chat-messages">
+        <div *ngFor="let message of messages" class="message-container">
+            <br>
+            <div class="message">
+                <p>{{ message }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type your message...">
+        <div class="microphone-container" (click)="startListening()">
+            <!-- Image element -->
+        </div>
+        <button (click)="sendMessage()" class="send-button">Send</button>
+    </div>
+</div>
+
+</body>

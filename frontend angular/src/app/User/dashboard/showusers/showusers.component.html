@@ -1,0 +1,240 @@
+
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="bg-card">
+        <div class="flex flex-col w-full max-w-screen-xl mx-auto px-6 sm:px-8">
+            <div class="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-8 sm:my-12">
+                <!-- Avatar and title -->
+                <div class="flex flex-auto items-center min-w-0">
+                    <div class="flex-0 w-16 h-16 rounded-full overflow-hidden bg-primary-100">
+                        <mat-icon class="w-full h-full flex items-center justify-center text-primary-600" [svgIcon]="'heroicons_solid:users'"></mat-icon>
+                    </div>
+                    <div class="flex flex-col min-w-0 ml-4">
+                        <div class="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">
+                            {{ usersDisplayContext }} Management
+                        </div>
+                        <div class="text-secondary">{{ usersFilterDescription }}</div>
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center mt-6 sm:mt-0 sm:ml-2 space-x-2">
+                    <!-- Add User Button (Only for Officers) -->
+                    <button
+                        *ngIf="canAddUsers()"
+                        mat-flat-button
+                        [color]="'accent'"
+                        (click)="navigateToAddUser()">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                        <span class="ml-2"> {{ addUserButtonText }}</span>
+                    </button>
+                    <!-- Filters Button -->
+                    <button
+                        mat-flat-button
+                        [color]="'primary'"
+                        (click)="toggleFilters()">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="showFilters ? 'heroicons_solid:eye-slash' : 'heroicons_solid:funnel'"></mat-icon>
+                        <span class="ml-2">{{showFilters ? 'Hide Filters' : 'Show Filters'}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto border-t -mt-px pt-4 sm:pt-6">
+        <div class="w-full max-w-screen-xl mx-auto px-6 sm:px-8">
+            
+            <!-- Filters Section -->
+            <div *ngIf="showFilters" class="bg-card shadow rounded-2xl p-6 mb-6 animate-fade-in">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Filter Users</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Search Filter -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Search Users</mat-label>
+                        <input matInput 
+                               [(ngModel)]="searchTerm" 
+                               (input)="onSearchChange()"
+                               placeholder="Search by name, username, or email">
+                        <mat-icon matSuffix [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                    </mat-form-field>
+
+                    <!-- Role Filter -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Filter by Role</mat-label>
+                        <mat-select [(value)]="selectedRole" (selectionChange)="onRoleFilterChange()">
+                            <mat-option *ngFor="let role of availableRoles" [value]="role.value">
+                                {{role.label}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Status Filter -->
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Filter by Status</mat-label>
+                        <mat-select [(value)]="selectedStatus" (selectionChange)="onStatusFilterChange()">
+                            <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+                                {{status.label}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Clear Filters Button -->
+                    <div class="flex items-center">
+                        <button mat-stroked-button 
+                                (click)="clearFilters()" 
+                                class="w-full h-12 mt-4">
+                            <mat-icon class="mr-2" [svgIcon]="'heroicons_solid:x-mark'"></mat-icon>
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Results Count -->
+                <div class="mt-4 text-sm text-gray-600">
+                    <div>Showing {{filteredUsers?.length || 0}} of {{users?.length || 0}} total users</div>
+                    <div class="text-xs mt-1 text-blue-600">{{ usersFilterDescription }}</div>
+                </div>
+            </div>
+
+            <!-- Users Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
+                <ng-container *ngFor="let user of dataSource">
+                    <div class="flex flex-col flex-auto items-center bg-card shadow rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex flex-col flex-auto w-full p-6 text-center">
+                            <!-- Avatar -->
+                            <div class="w-24 h-24 mx-auto rounded-full overflow-hidden bg-gray-200">
+                                <ng-container *ngIf="user.attributes?.avatar; else defaultAvatar">
+                                    <img
+                                        class="w-full h-full object-cover"
+                                        [src]="'assets/images/avatars/' + user.attributes.avatar[0]"
+                                        [alt]="user.firstName + ' ' + user.lastName">
+                                </ng-container>
+                                <ng-template #defaultAvatar>
+                                    <div class="w-full h-full flex items-center justify-center bg-primary-100">
+                                        <mat-icon class="text-primary-600 text-3xl" [svgIcon]="'heroicons_solid:user'"></mat-icon>
+                                    </div>
+                                </ng-template>
+                            </div>
+                            
+                            <!-- User Info -->
+                            <div class="mt-4">
+                                <div class="font-medium text-lg">{{user.firstName}} {{user.lastName}}</div>
+                                <div class="text-secondary text-sm mt-1">{{user.username}}</div>
+                                <div class="text-secondary text-sm">{{user.email}}</div>
+                            </div>
+
+                            <!-- Role Badge -->
+                            <div class="mt-3">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                                      [ngClass]="{
+                                        'bg-red-100 text-red-800': user.realmRoles?.name === 'bankadmin',
+                                        'bg-blue-100 text-blue-800': user.realmRoles?.name === 'cnssadmin',
+                                        'bg-gray-100 text-gray-800': user.realmRoles?.name === 'user',
+                                        'bg-green-100 text-green-800': user.realmRoles?.name === 'admin'
+                                      }">
+                                    {{user.realmRoles?.name ? user.realmRoles.name : 'user'}}
+                                </span>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mt-2">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                                      [ngClass]="{
+                                        'bg-green-100 text-green-800': user.enabled,
+                                        'bg-red-100 text-red-800': !user.enabled
+                                      }">
+                                    <span class="w-1.5 h-1.5 rounded-full mr-1.5"
+                                          [ngClass]="{
+                                            'bg-green-500': user.enabled,
+                                            'bg-red-500': !user.enabled
+                                          }"></span>
+                                    {{user.enabled ? 'Active' : 'Inactive'}}
+                                </span>
+                            </div>
+
+                            <!-- Additional Info -->
+                            <div class="mt-3 text-xs text-secondary space-y-1" *ngIf="user.attributes">
+                                <div *ngIf="user.attributes.phone">
+                                    <mat-icon class="icon-size-4 mr-1" [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                                    {{user.attributes.phone[0]}}
+                                </div>
+                                <div *ngIf="user.attributes.age">
+                                    <mat-icon class="icon-size-4 mr-1" [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+                                    Age: {{user.attributes.age[0]}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center w-full border-t divide-x">
+                            <a
+                                class="flex flex-auto items-center justify-center py-3 hover:bg-hover transition-colors duration-200"
+                                [href]="'mailto:' + user.email">
+                                <mat-icon
+                                    class="icon-size-4 text-hint"
+                                    [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                                <span class="ml-2 text-sm">Email</span>
+                            </a>
+                            <button
+                                class="flex flex-auto items-center justify-center py-3 hover:bg-hover transition-colors duration-200"
+                                (click)="editUserRole(user)"
+                                mat-button>
+                                <mat-icon
+                                    class="icon-size-4 text-hint"
+                                    [svgIcon]="'heroicons_solid:pencil'"></mat-icon>
+                                <span class="ml-2 text-sm">Edit Role</span>
+                            </button>
+                            <button
+                                class="flex flex-auto items-center justify-center py-3 transition-colors duration-200"
+                                [ngClass]="{
+                                    'hover:bg-green-50 text-green-600': !user.enabled,
+                                    'hover:bg-yellow-50 text-yellow-600': user.enabled
+                                }"
+                                (click)="toggleUserStatus(user)"
+                                mat-button>
+                                <mat-icon
+                                    class="icon-size-4"
+                                    [svgIcon]="user.enabled ? 'heroicons_solid:pause' : 'heroicons_solid:play'"></mat-icon>
+                                <span class="ml-2 text-sm">{{user.enabled ? 'Disable' : 'Enable'}}</span>
+                            </button>
+                            <button
+                                class="flex flex-auto items-center justify-center py-3 hover:bg-red-50 transition-colors duration-200 text-red-600"
+                                (click)="deleteUser(user.id)"
+                                mat-button>
+                                <mat-icon
+                                    class="icon-size-4"
+                                    [svgIcon]="'heroicons_solid:trash'"></mat-icon>
+                                <span class="ml-2 text-sm">Delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!dataSource || dataSource.length === 0" class="flex flex-col items-center justify-center py-12">
+                <div class="w-32 h-32 mx-auto rounded-full overflow-hidden bg-gray-100 flex items-center justify-center mb-4">
+                    <mat-icon class="text-gray-400 text-5xl" [svgIcon]="'heroicons_solid:users'"></mat-icon>
+                </div>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">No users found</h3>
+                <p class="text-gray-500 text-center max-w-md">
+                    There are no users in the system yet. Add your first user to get started.
+                </p>
+                <button
+                    class="mt-4"
+                    mat-flat-button
+                    [color]="'primary'">
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                    <span class="ml-2">Add First User</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+

@@ -1,0 +1,1140 @@
+/* Enhanced Reservation Component Styles - Blue (#0877c6) & White Theme */
+
+// Color Variables
+$primary-blue: #0877c6;
+$primary-blue-light: #1a85d1;
+$primary-blue-dark: #065a9f;
+$white: #ffffff;
+$light-gray: #f8f9fa;
+$medium-gray: #e9ecef;
+$dark-gray: #6c757d;
+$text-dark: #212529;
+$text-light: #6c757d;
+$success: #28a745;
+$warning: #ffc107;
+$danger: #dc3545;
+$info: #17a2b8;
+
+// Shadows
+$shadow-sm: 0 2px 4px rgba(8, 119, 198, 0.1);
+$shadow-md: 0 4px 12px rgba(8, 119, 198, 0.15);
+$shadow-lg: 0 8px 24px rgba(8, 119, 198, 0.2);
+
+.reservations-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: $light-gray;
+    min-height: 100vh;
+}
+
+/* Enhanced Header Section */
+.header-section {
+    margin-bottom: 32px;
+}
+
+.page-header {
+    background: $white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.page-title {
+    color: $primary-blue;
+    margin: 0 0 8px 0;
+    font-size: 2.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .icon-reservations::before {
+        content: "📋";
+        font-size: 2rem;
+    }
+}
+
+.page-subtitle {
+    color: $text-light;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Modern Button Styles */
+.modern-btn {
+    background: $primary-blue;
+    color: $white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: $shadow-sm;
+
+    &:hover:not(:disabled) {
+        background: $primary-blue-light;
+        transform: translateY(-2px);
+        box-shadow: $shadow-md;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        background: $medium-gray;
+        color: $text-light;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.modern-btn-secondary {
+    background: $dark-gray;
+    color: $white;
+
+    &:hover:not(:disabled) {
+        background: darken($dark-gray, 10%);
+    }
+}
+
+.icon-refresh::before { content: "🔄"; }
+.icon-refresh.spinning { animation: spin 1s linear infinite; }
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Enhanced Summary Cards */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.summary-card {
+    background: $white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid $medium-gray;
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: $shadow-md;
+        transform: translateY(-2px);
+    }
+}
+
+.card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.card-content {
+    flex: 1;
+
+    h3 {
+        margin: 0 0 8px 0;
+        color: $text-light;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    .count {
+        font-size: 2rem;
+        font-weight: 700;
+        color: $text-dark;
+        margin: 0;
+    }
+
+    .amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .count-amount {
+        font-size: 0.875rem;
+        margin: 4px 0;
+        color: $text-light;
+        font-weight: 500;
+    }
+}
+
+/* Card Type Styles */
+.summary-card.total {
+    border-left: 4px solid $primary-blue;
+
+    .card-icon {
+        background: rgba($primary-blue, 0.1);
+        color: $primary-blue;
+
+        .icon-total::before { content: "📊"; }
+    }
+}
+
+.summary-card.active {
+    border-left: 4px solid $warning;
+
+    .card-icon {
+        background: rgba($warning, 0.1);
+        color: darken($warning, 20%);
+
+        .icon-active::before { content: "⏳"; }
+    }
+
+    .count { color: darken($warning, 20%); }
+}
+
+.summary-card.paid {
+    border-left: 4px solid $success;
+
+    .card-icon {
+        background: rgba($success, 0.1);
+        color: $success;
+
+        .icon-paid::before { content: "✅"; }
+    }
+
+    .count { color: $success; }
+}
+
+.summary-card.canceled {
+    border-left: 4px solid $danger;
+
+    .card-icon {
+        background: rgba($danger, 0.1);
+        color: $danger;
+
+        .icon-canceled::before { content: "❌"; }
+    }
+
+    .count { color: $danger; }
+}
+
+.summary-card.amount-total {
+    border-left: 4px solid $info;
+
+    .card-icon {
+        background: rgba($info, 0.1);
+        color: $info;
+
+        .icon-money::before { content: "💰"; }
+    }
+
+    .amount { color: $info; }
+}
+
+.summary-card.amount-paid {
+    border-left: 4px solid $success;
+
+    .card-icon {
+        background: rgba($success, 0.1);
+        color: $success;
+
+        .icon-paid-amount::before { content: "💳"; }
+    }
+
+    .amount { color: $success; }
+}
+
+.summary-card.amount-reserved {
+    border-left: 4px solid $warning;
+
+    .card-icon {
+        background: rgba($warning, 0.1);
+        color: darken($warning, 20%);
+
+        .icon-reserved-amount::before { content: "🏦"; }
+    }
+
+    .amount { color: darken($warning, 20%); }
+    .count-amount { color: darken($warning, 20%); }
+}
+
+.summary-card.amount-canceled {
+    border-left: 4px solid $danger;
+
+    .card-icon {
+        background: rgba($danger, 0.1);
+        color: $danger;
+
+        .icon-canceled-amount::before { content: "🚫"; }
+    }
+
+    .amount { color: $danger; }
+}
+
+/* Enhanced Modern Cards */
+.modern-card {
+    background: $white;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+    border: 1px solid $medium-gray;
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: $shadow-md;
+        border-color: $primary-blue;
+    }
+}
+
+/* Enhanced Filter Section */
+.filter-section {
+    margin-bottom: 24px;
+    padding: 24px;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid $medium-gray;
+
+    h3 {
+        color: $primary-blue;
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .icon-filter::before { content: "🔍"; }
+    }
+}
+
+.filter-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-weight: 600;
+        color: $text-dark;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+}
+
+/* Modern Input Styles */
+.modern-input, .modern-select {
+    padding: 12px 16px;
+    border: 2px solid $medium-gray;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: $white;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-blue;
+        box-shadow: 0 0 0 3px rgba($primary-blue, 0.1);
+    }
+
+    &::placeholder {
+        color: $text-light;
+    }
+}
+
+.amount-filter, .date-filter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .range-separator {
+        color: $text-light;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+}
+
+.filter-summary {
+    text-align: center;
+    margin-top: 20px;
+
+    .summary-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba($primary-blue, 0.1);
+        color: $primary-blue;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+
+        .icon-results::before { content: "📈"; }
+    }
+}
+
+/* Icon definitions */
+.icon-search::before { content: "🔍"; }
+.icon-status::before { content: "📊"; }
+.icon-amount-range::before { content: "💰"; }
+.icon-date-range::before { content: "📅"; }
+.icon-clear::before { content: "🗑️"; }
+
+/* Enhanced Alert Styles */
+.modern-alert {
+    background: $white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    box-shadow: $shadow-sm;
+    border: 1px solid transparent;
+}
+
+.error-message {
+    border-left: 4px solid $danger;
+
+    .alert-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba($danger, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        .icon-error::before {
+            content: "⚠️";
+            font-size: 20px;
+        }
+    }
+
+    .alert-content {
+        flex: 1;
+
+        h4 {
+            margin: 0 0 8px 0;
+            color: $danger;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin: 0 0 16px 0;
+            color: $text-dark;
+        }
+    }
+
+    .retry-btn {
+        background: $danger;
+        color: $white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: darken($danger, 10%);
+        }
+
+        .icon-retry::before { content: "🔄"; }
+    }
+}
+
+/* Enhanced Loading State */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+    background: $white;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+    margin-bottom: 24px;
+}
+
+.loading-spinner {
+    text-align: center;
+
+    .spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid $medium-gray;
+        border-top: 4px solid $primary-blue;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+    }
+
+    p {
+        color: $text-light;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+}
+
+/* Enhanced Table Styles */
+.reservations-table-container {
+    margin-bottom: 32px;
+    overflow: hidden;
+}
+
+.table-header {
+    background: rgba($primary-blue, 0.05);
+    padding: 20px 24px;
+    border-bottom: 1px solid $medium-gray;
+
+    h3 {
+        color: $primary-blue;
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .icon-table::before { content: "📋"; }
+    }
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.reservations-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th {
+        background: $primary-blue;
+        color: $white;
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    td {
+        padding: 16px 12px;
+        border-bottom: 1px solid $medium-gray;
+        vertical-align: middle;
+    }
+
+    .table-row {
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: rgba($primary-blue, 0.05);
+        }
+
+        &.status-pending, &.status-reserved {
+            background: rgba($warning, 0.1);
+        }
+
+        &.status-paid {
+            background: rgba($success, 0.1);
+        }
+
+        &.status-canceled, &.status-expired {
+            background: rgba($danger, 0.1);
+        }
+    }
+}
+
+/* Table Cell Styles */
+.id-cell {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.875rem;
+    color: $text-light;
+}
+
+.cin-cell {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    color: $primary-blue;
+}
+
+.email-cell {
+    font-family: 'Monaco', 'Menlo', monospace;
+    color: $info;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.phone-cell {
+    font-family: 'Monaco', 'Menlo', monospace;
+    color: $text-dark;
+}
+
+.reference-cell {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    color: $primary-blue;
+}
+
+.amount-cell {
+    font-weight: 700;
+    text-align: right;
+    color: $success;
+    font-size: 1rem;
+}
+
+.status-cell {
+    text-align: center;
+}
+
+.reason-cell {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $text-light;
+}
+
+.date-cell {
+    font-size: 0.875rem;
+    color: $text-light;
+}
+
+.actions-cell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Status Badge Styles */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.status-pending, &.status-reserved {
+        background: rgba($warning, 0.2);
+        color: darken($warning, 30%);
+    }
+
+    &.status-paid {
+        background: rgba($success, 0.2);
+        color: darken($success, 10%);
+    }
+
+    &.status-canceled, &.status-expired {
+        background: rgba($danger, 0.2);
+        color: darken($danger, 10%);
+    }
+}
+
+/* Enhanced Action Buttons */
+.action-btn {
+    background: $primary-blue;
+    color: $white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    box-shadow: $shadow-sm;
+
+    &:hover {
+        background: $primary-blue-light;
+        transform: translateY(-1px);
+        box-shadow: $shadow-md;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    .icon-view::before { content: "👁️"; }
+}
+
+/* Enhanced No Data State */
+.no-data-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+    background: $white;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+}
+
+.no-data-content {
+    text-align: center;
+    max-width: 400px;
+
+    .no-data-icon {
+        font-size: 4rem;
+        margin-bottom: 24px;
+        opacity: 0.5;
+
+        .icon-no-data::before { content: "📭"; }
+    }
+
+    h3 {
+        color: $text-dark;
+        margin: 0 0 12px 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    p {
+        color: $text-light;
+        margin: 0 0 24px 0;
+        font-size: 1rem;
+    }
+
+    .reload-btn {
+        .icon-reload::before { content: "🔄"; }
+    }
+}
+
+/* Enhanced Section Containers */
+.filter-sections {
+    margin-top: 40px;
+}
+
+.section-container {
+    margin-bottom: 32px;
+    overflow: hidden;
+}
+
+.section-header {
+    background: rgba($primary-blue, 0.05);
+    padding: 20px 24px;
+    border-bottom: 1px solid $medium-gray;
+
+    h3 {
+        color: $primary-blue;
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+}
+
+.icon-active-section::before { content: "⏳"; }
+.icon-paid-section::before { content: "✅"; }
+.icon-canceled-section::before { content: "❌"; }
+
+/* Enhanced Reservation Cards Grid */
+.reservations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    padding: 24px;
+}
+
+.reservation-card {
+    background: $white;
+    border-radius: 12px;
+    box-shadow: $shadow-sm;
+    border: 1px solid $medium-gray;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $shadow-md;
+    }
+}
+
+.card-header-mini {
+    padding: 16px 20px;
+    border-bottom: 1px solid $medium-gray;
+}
+
+.card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.active {
+        background: rgba($warning, 0.1);
+        color: darken($warning, 20%);
+
+        .icon-active-status::before { content: "⏳"; }
+    }
+
+    &.paid {
+        background: rgba($success, 0.1);
+        color: $success;
+
+        .icon-paid-status::before { content: "✅"; }
+    }
+
+    &.canceled {
+        background: rgba($danger, 0.1);
+        color: $danger;
+
+        .icon-canceled-status::before { content: "❌"; }
+    }
+}
+
+.card-body-mini {
+    padding: 20px;
+}
+
+.card-title {
+    margin: 0 0 16px 0;
+    color: $primary-blue;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon-user::before { content: "👤"; }
+}
+
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-item {
+    margin: 0;
+    color: $text-dark;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .label {
+        font-weight: 600;
+        color: $text-light;
+        min-width: 80px;
+    }
+
+    &.amount-highlight {
+        color: $success;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    &.expires-highlight {
+        color: $warning;
+        font-weight: 600;
+    }
+
+    &.completed-highlight {
+        color: $success;
+        font-weight: 600;
+    }
+
+    &.canceled-highlight {
+        color: $danger;
+        font-weight: 600;
+    }
+}
+
+/* Mini Icons */
+.icon-email-mini::before { content: "📧"; }
+.icon-phone-mini::before { content: "📱"; }
+.icon-reference-mini::before { content: "🔗"; }
+.icon-amount-mini::before { content: "💰"; }
+.icon-expires-mini::before { content: "⏰"; }
+.icon-completed-mini::before { content: "✅"; }
+.icon-created-mini::before { content: "📅"; }
+
+.card-actions {
+    padding: 16px 20px;
+    border-top: 1px solid $medium-gray;
+    background: rgba($primary-blue, 0.02);
+    text-align: center;
+}
+
+.card-action-btn {
+    background: $primary-blue;
+    color: $white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: $primary-blue-light;
+        transform: translateY(-1px);
+    }
+
+    .icon-view-mini::before { content: "👁️"; }
+}
+
+/* Enhanced Pagination */
+.pagination-container {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: rgba($primary-blue, 0.02);
+    border-top: 1px solid $medium-gray;
+}
+
+.pagination-info {
+    text-align: center;
+    margin-bottom: 16px;
+
+    .pagination-text {
+        color: $text-light;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    background: $white;
+    border: 2px solid $medium-gray;
+    color: $text-dark;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &:hover:not(:disabled) {
+        background: $primary-blue;
+        border-color: $primary-blue;
+        color: $white;
+        transform: translateY(-1px);
+    }
+
+    &:disabled {
+        background: $light-gray;
+        color: $text-light;
+        cursor: not-allowed;
+        opacity: 0.6;
+        transform: none;
+    }
+
+    &.active {
+        background: $primary-blue;
+        border-color: $primary-blue;
+        color: $white;
+        font-weight: 600;
+    }
+
+    &.page-number {
+        min-width: 40px;
+        justify-content: center;
+    }
+}
+
+.icon-prev::before { content: "←"; }
+.icon-next::before { content: "→"; }
+
+/* Card Type Specific Styles */
+.active-card {
+    border-left: 4px solid $warning;
+}
+
+.paid-card {
+    border-left: 4px solid $success;
+}
+
+.canceled-card {
+    border-left: 4px solid $danger;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .summary-cards {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .filter-controls {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .reservations-container {
+        padding: 16px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+    }
+
+    .summary-cards {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+    }
+
+    .filter-controls {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .filter-header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .amount-filter, .date-filter {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .reservations-table {
+        font-size: 12px;
+
+        th, td {
+            padding: 12px 8px;
+        }
+    }
+
+    .email-cell {
+        max-width: 120px;
+    }
+
+    .reason-cell {
+        max-width: 100px;
+    }
+
+    .reservations-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+    .pagination-controls {
+        gap: 4px;
+    }
+
+    .pagination-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card-content {
+        .count {
+            font-size: 1.75rem;
+        }
+
+        .amount {
+            font-size: 1.25rem;
+        }
+    }
+
+    .reservations-table {
+        font-size: 11px;
+
+        th, td {
+            padding: 8px 4px;
+        }
+    }
+
+    .pagination-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+
+        &.page-number {
+            min-width: 32px;
+        }
+    }
+}

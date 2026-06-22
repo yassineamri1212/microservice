@@ -1,0 +1,305 @@
+<div class="adduser-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-controls">
+      <button class="back-btn" (click)="goBack()">
+        ← Back to Users
+      </button>
+      <h1>{{ componentTitle }}</h1>
+      <div class="spacer"></div>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    <div class="error-content">
+      <span class="error-icon">⚠️</span>
+      <span class="error-text">{{ error }}</span>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="success" class="success-message">
+    <div class="success-content">
+      <span class="success-icon">✅</span>
+      <span class="success-text">{{ success }}</span>
+    </div>
+  </div>
+
+  <!-- Add User Form -->
+  <div *ngIf="targetRole" class="form-container">
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Create New {{ getRoleDisplayName() }}</h2>
+        <p class="form-description">
+          Fill in the details below to create a new {{ getRoleDisplayName().toLowerCase() }} account.
+        </p>
+      </div>
+
+      <form (ngSubmit)="createUser()" #addUserForm="ngForm" class="user-form">
+        
+        <!-- Personal Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">👤 Personal Information</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                [(ngModel)]="userForm.firstName"
+                (blur)="validateFirstName()"
+                (input)="validateFirstName()"
+                required
+                placeholder="Enter first name"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.firstName">
+              <div *ngIf="fieldErrors.firstName" class="field-error">{{ fieldErrors.firstName }}</div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                [(ngModel)]="userForm.lastName"
+                (blur)="validateLastName()"
+                (input)="validateLastName()"
+                required
+                placeholder="Enter last name"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.lastName">
+              <div *ngIf="fieldErrors.lastName" class="field-error">{{ fieldErrors.lastName }}</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number</label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                [(ngModel)]="userForm.phoneNumber"
+                (blur)="validatePhoneNumber()"
+                (input)="validatePhoneNumber()"
+                placeholder="Enter phone number (optional)"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.phoneNumber">
+              <div *ngIf="fieldErrors.phoneNumber" class="field-error">{{ fieldErrors.phoneNumber }}</div>
+            </div>
+
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                [(ngModel)]="userForm.address"
+                (blur)="validateAddress()"
+                (input)="validateAddress()"
+                placeholder="Enter address (optional)"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.address">
+              <div *ngIf="fieldErrors.address" class="field-error">{{ fieldErrors.address }}</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="birthDate">Birth Date *</label>
+              <input
+                type="date"
+                id="birthDate"
+                name="birthDate"
+                [(ngModel)]="userForm.birthDate"
+                (blur)="validateBirthDate()"
+                (change)="onBirthDateChange()"
+                [max]="maxDate.toISOString().split('T')[0]"
+                [min]="minDate.toISOString().split('T')[0]"
+                required
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.birthDate">
+              <div *ngIf="fieldErrors.birthDate" class="field-error">{{ fieldErrors.birthDate }}</div>
+            </div>
+
+            <div class="form-group">
+              <label for="age">Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                [(ngModel)]="userForm.age"
+                readonly
+                placeholder="Auto-calculated from birth date"
+                [disabled]="true"
+                class="form-input readonly">
+              <small class="age-info">Age is automatically calculated from birth date</small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full-width">
+              <div class="avatar-selection">
+                <label for="avatar">Choose an Avatar *</label>
+                <div class="avatar-grid">
+                  <div
+                    *ngFor="let avatar of avatars"
+                    class="avatar-item"
+                    [class.selected]="userForm.avatar === avatar"
+                    (click)="selectAvatar(avatar)"
+                    [disabled]="loading">
+                    <img [src]="'assets/images/avatars/' + avatar" [alt]="avatar" class="avatar-img"/>
+                  </div>
+                </div>
+                <div *ngIf="fieldErrors.avatar" class="field-error">{{ fieldErrors.avatar }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected avatar preview -->
+          <div *ngIf="image" class="form-row">
+            <div class="form-group">
+              <p class="avatar-preview-label">Selected Avatar:</p>
+              <img [src]="'assets/images/avatars/' + image" [alt]="image" class="avatar-preview"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">🔐 Account Information</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="username">Username *</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                [(ngModel)]="userForm.username"
+                (blur)="validateUsername()"
+                (input)="validateUsername()"
+                required
+                placeholder="Enter username"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.username">
+              <div *ngIf="fieldErrors.username" class="field-error">{{ fieldErrors.username }}</div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                [(ngModel)]="userForm.email"
+                (blur)="validateEmail()"
+                (input)="validateEmail()"
+                required
+                placeholder="Enter email address"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.email">
+              <div *ngIf="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Password *</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                [(ngModel)]="userForm.password"
+                (blur)="validatePassword()"
+                (input)="validatePassword()"
+                required
+                placeholder="Enter password (min 6 characters)"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.password">
+              <div *ngIf="fieldErrors.password" class="field-error">{{ fieldErrors.password }}</div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password *</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                [(ngModel)]="userForm.confirmPassword"
+                (blur)="validateConfirmPassword()"
+                (input)="validateConfirmPassword()"
+                required
+                placeholder="Confirm password"
+                [disabled]="loading"
+                class="form-input"
+                [class.error]="fieldErrors.confirmPassword">
+              <div *ngIf="fieldErrors.confirmPassword" class="field-error">{{ fieldErrors.confirmPassword }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Information Section -->
+        <div class="form-section">
+          <h3 class="section-title">🏢 Role Information</h3>
+          
+          <div class="role-info">
+            <div class="role-badge">
+              <span class="role-label">Assigned Role:</span>
+              <span class="role-value">{{ getRoleDisplayName() }}</span>
+            </div>
+            <p class="role-description">
+              This user will be created with {{ getRoleDisplayName().toLowerCase() }} permissions.
+            </p>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="goBack()"
+            [disabled]="loading">
+            Cancel
+          </button>
+          
+          <button
+            type="submit"
+            class="submit-btn"
+            [disabled]="loading"
+            [class.invalid]="!isFormValid()">
+            <span *ngIf="!loading">👤 Create {{ getRoleDisplayName() }}</span>
+            <span *ngIf="loading">⏳ Creating User...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Unauthorized Access Message -->
+  <div *ngIf="!targetRole && !loading" class="unauthorized-container">
+    <div class="unauthorized-card">
+      <div class="unauthorized-icon">🚫</div>
+      <h2>Access Denied</h2>
+      <p>
+        Only officers (Bank Officers and CNSS Officers) are authorized to create new user accounts.
+      </p>
+      <button class="back-btn" (click)="goBack()">
+        ← Back to Users
+      </button>
+    </div>
+  </div>
+</div>

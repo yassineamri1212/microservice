@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "keycloak.fullname" . }}
+  labels:
+    app: {{ include "keycloak.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "keycloak.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "keycloak.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.35
+          command: ['sh', '-c']
+          args:
+            - |
+              chown -R 1000:1000 /opt/keycloak/data
+              chmod -R 755 /opt/keycloak/data
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            {{- if .Values.persistence.enabled }}
+            - name: keycloak-data
+              mountPath: {{ .Values.persistence.mountPath }}
+            {{- end }}
+      {{- if .Values.realmImport.enabled }}
+        - name: realm-import
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/opt/keycloak/bin/kc.sh"
+            - "import"
+            - "--file=/opt/keycloak/data/import/realm.json"
+            - "--override=true"
+          env:
+            - name: KEYCLOAK_ADMIN
+              value: {{ .Values.env.KEYCLOAK_ADMIN | quote }}
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: {{ .Values.env.KEYCLOAK_ADMIN_PASSWORD | quote }}
+          volumeMounts:
+            - name: realm-import
+              mountPath: /opt/keycloak/data/import
+            {{- if .Values.persistence.enabled }}
+            - name: keycloak-data
+              mountPath: {{ .Values.persistence.mountPath }}
+            {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            {{- range .Values.command }}
+            - {{ . | quote }}
+            {{- end }}
+          env:
+            - name: KEYCLOAK_ADMIN
+              value: {{ .Values.env.KEYCLOAK_ADMIN | quote }}
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: {{ .Values.env.KEYCLOAK_ADMIN_PASSWORD | quote }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: keycloak-data
+              mountPath: {{ .Values.persistence.mountPath }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if or .Values.persistence.enabled .Values.realmImport.enabled }}
+      volumes:
+        {{- if .Values.persistence.enabled }}
+        - name: keycloak-data
+          persistentVolumeClaim:
+            claimName: {{ include "keycloak.fullname" . }}-data
+        {{- end }}
+        {{- if .Values.realmImport.enabled }}
+        - name: realm-import
+          configMap:
+            name: {{ include "keycloak.fullname" . }}-realm
+        {{- end }}
+      {{- end }}

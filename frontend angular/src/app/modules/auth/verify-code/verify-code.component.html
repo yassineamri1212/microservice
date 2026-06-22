@@ -1,0 +1,126 @@
+<div class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0">
+    <div class="md:flex md:items-center md:justify-end w-full sm:w-auto md:h-full md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card">
+        <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
+            <!-- Logo -->
+            <div class="w-50">
+                <img src="assets/images/logo/images-removebg-preview.png" alt="Logo">
+            </div>
+
+            <!-- Title -->
+            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight">Verify Code</div>
+            <div class="flex items-baseline mt-0.5 font-medium">
+                <div>We've sent a verification code to <strong>{{ email }}</strong></div>
+            </div>
+
+            <!-- Alert -->
+            <fuse-alert class="mt-8"
+                        *ngIf="showAlert"
+                        [appearance]="'outline'"
+                        [showIcon]="false"
+                        [type]="alert.type"
+                        [@shake]="alert.type === 'error'">
+                {{alert.message}}
+            </fuse-alert>
+
+            <!-- Verify Code form -->
+            <form class="mt-8" [formGroup]="verifyForm" #verifyCodeNgForm="ngForm">
+
+                <!-- Verification Code field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Verification Code</mat-label>
+                    <input id="verificationCode" matInput [formControlName]="'verificationCode'" placeholder="Enter 4-digit code" maxlength="4" class="text-center text-2xl font-semibold tracking-widest">
+                    <mat-error *ngIf="verifyForm.get('verificationCode')?.hasError('required')">
+                        Verification code is required
+                    </mat-error>
+                    <mat-error *ngIf="verifyForm.get('verificationCode')?.hasError('pattern')">
+                        Please enter a valid 4-digit code
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- New Password field -->
+                <mat-form-field class="w-full">
+                    <mat-label>New Password</mat-label>
+                    <input id="newPassword" matInput type="password" [formControlName]="'newPassword'" #passwordField>
+                    <button mat-icon-button type="button" (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'" matSuffix>
+                        <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'password'" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'" [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                    </button>
+                    <mat-error *ngIf="verifyForm.get('newPassword')?.hasError('required')">
+                        New password is required
+                    </mat-error>
+                    <mat-error *ngIf="verifyForm.get('newPassword')?.hasError('minlength')">
+                        Password must be at least 6 characters long
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Confirm Password field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Confirm New Password</mat-label>
+                    <input id="confirmPassword" matInput type="password" [formControlName]="'confirmPassword'" #confirmPasswordField>
+                    <button mat-icon-button type="button" (click)="confirmPasswordField.type === 'password' ? confirmPasswordField.type = 'text' : confirmPasswordField.type = 'password'" matSuffix>
+                        <mat-icon class="icon-size-5" *ngIf="confirmPasswordField.type === 'password'" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        <mat-icon class="icon-size-5" *ngIf="confirmPasswordField.type === 'text'" [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                    </button>
+                    <mat-error *ngIf="verifyForm.get('confirmPassword')?.hasError('required')">
+                        Please confirm your password
+                    </mat-error>
+                    <mat-error *ngIf="verifyForm.hasError('passwordMismatch') && verifyForm.get('confirmPassword')?.touched">
+                        Passwords do not match
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Submit button -->
+                <button class="fuse-mat-button-large w-full mt-6" mat-flat-button [color]="'primary'" [disabled]="loading || verifyForm.invalid" (click)="onVerifyAndReset()">
+                    <span *ngIf="!loading">Reset Password</span>
+                    <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+                </button>
+
+                <!-- Resend code section -->
+                <div class="flex items-center justify-center mt-4 font-medium">
+                    <div>Didn't receive the code?</div>
+                    <button type="button" mat-button [color]="'primary'" class="ml-1" (click)="resendCode()" [disabled]="loading">
+                        Resend Code
+                    </button>
+                </div>
+
+                <!-- Back to reset password -->
+                <div class="flex items-baseline mt-2 font-medium justify-center">
+                    <a class="text-primary-500 hover:underline" [routerLink]="['/reset-password']">
+                        ← Back to Reset Password
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="relative hidden md:flex flex-auto items-center justify-center w-1/2 h-full p-16 lg:px-28 overflow-hidden bg-gray-800 dark:border-l">
+        <!-- Background - @formatter:off -->
+        <!-- Rings -->
+        <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <g class="text-gray-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+                <circle r="234" cx="196" cy="23"></circle>
+                <circle r="234" cx="790" cy="491"></circle>
+            </g>
+        </svg>
+        <!-- Dots -->
+        <svg class="absolute -top-16 -right-16 text-gray-700" viewBox="0 0 220 192" width="220" height="192" fill="none">
+            <defs>
+                <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b660" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
+                </pattern>
+            </defs>
+            <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b660)"></rect>
+        </svg>
+        <!-- @formatter:on -->
+        <!-- Content -->
+        <div class="z-10 relative w-full max-w-2xl">
+            <div class="text-7xl font-bold leading-none text-gray-100">
+                <div>Almost</div>
+                <div>There!</div>
+            </div>
+            <div class="mt-6 text-lg tracking-tight leading-6 text-gray-400">
+                Enter the verification code we sent to your email and create a new password to regain access to your account.
+            </div>
+        </div>
+    </div>
+</div>
