@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: theoldisback/user-service
-  tag: localcluster
+  repository: amriyass12/user-service
+  tag: latest
   pullPolicy: IfNotPresent
 
 service:

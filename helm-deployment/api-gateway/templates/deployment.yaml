@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: theoldisback/api-gateway-service:5063967d9b37d0b78981ff6aa96bf366e20a75ad
+          image: amriyass12/api-gateway:latest
           imagePullPolicy: Always
       imagePullSecrets:
         - name: regcred

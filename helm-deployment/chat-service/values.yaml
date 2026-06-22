@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: theoldisback/chat-service
-  tag: "a92f1f0045a7f1d0345d1b7a7e1ba2aaeefb64c0"
+  repository: amriyass12/service-chat
+  tag: "latest"
   pullPolicy: Always
 
 service:

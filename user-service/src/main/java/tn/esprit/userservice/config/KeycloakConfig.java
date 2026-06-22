@@ -30,7 +30,7 @@ public class KeycloakConfig {
                     .realm("esprit")
                     .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                     .clientId("angular")
-                    .clientSecret("ZYI3nVy3Aj9nGbT4RiyCZlhzhBDqzxd5")
+                    .clientSecret("81AzNdjzlT3xJUAdxxnelcqApCo0l7bp")
                     .build();
         }
         return keycloak;
@@ -44,7 +44,7 @@ public class KeycloakConfig {
                     .realm("esprit")
                     .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                     .clientId("angular")
-                    .clientSecret("ZYI3nVy3Aj9nGbT4RiyCZlhzhBDqzxd5")
+                    .clientSecret("81AzNdjzlT3xJUAdxxnelcqApCo0l7bp")
                     .build();
         }
         return keycloak;

@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: theoldisback/notification-service
-  tag: 5063967d9b37d0b78981ff6aa96bf366e20a75ad
+  repository: amriyass12/notification-service
+  tag: latest
   pullPolicy: IfNotPresent
 
 service:

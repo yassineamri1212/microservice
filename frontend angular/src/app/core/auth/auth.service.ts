@@ -51,12 +51,12 @@ export class AuthService {
         const body = new HttpParams()
             .set('grant_type', 'password')
             .set('client_id', 'angular')
-            .set('client_secret', 'ZYI3nVy3Aj9nGbT4RiyCZlhzhBDqzxd5') // We'll update this
+            .set('client_secret', '81AzNdjzlT3xJUAdxxnelcqApCo0l7bp') // We'll update this
             .set('username', 'admin')
             .set('password', 'admin');
 
         return this.httpClient.post<any>(url, body.toString(), {
-            headers: { 
+            headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
         }).pipe(map(response => response.access_token));
