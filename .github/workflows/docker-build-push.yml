@@ -3,8 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - STB
-      - localcluster
+      - master
   workflow_dispatch:
 
 jobs:
@@ -48,6 +47,6 @@ jobs:
         with:
           context: ${{ matrix.context }}
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:1.1.1
           cache-from: type=gha,scope=${{ matrix.service }}
           cache-to: type=gha,mode=max,scope=${{ matrix.service }}

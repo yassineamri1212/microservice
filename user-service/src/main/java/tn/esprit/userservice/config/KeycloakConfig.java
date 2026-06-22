@@ -19,6 +19,7 @@ public class KeycloakConfig {
 
     public KeycloakConfig() {
     }
+    // this is best
 
     @Bean
     public Keycloak keycloakInstance(){
